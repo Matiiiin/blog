@@ -1,0 +1,28 @@
+services:
+  blog:
+    build:
+      context: .
+      dockerfile: /dockerfiles/dev/django/Dockerfile
+    container_name: blog
+    restart: always
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./core:/app
+    env_file:
+      - ./envs/dev/django/.env
+    depends_on:
+      - blog_db
+    command: sh -c "python manage.py makemigrations && \
+                    python manage.py migrate && \
+                    python manage.py runserver 0.0.0.0:8000"
+  blog_db:
+    image: postgres:latest
+    container_name: blog_db
+    restart: always
+    env_file:
+      - ./envs/dev/postgres/.env
+    volumes:
+      - ./pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
