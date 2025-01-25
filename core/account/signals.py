@@ -10,4 +10,5 @@ def create_profile_for_user(sender, instance, created, **kwargs):
     if created:
         Profile.objects.create(
             user=instance,
+            first_name=instance.username,
         )
