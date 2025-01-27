@@ -7,7 +7,7 @@ from django.contrib.auth import authenticate , login ,logout
 from django.http import HttpResponse , HttpResponseBadRequest , HttpResponseRedirect
 import logging
 from django.core.mail import EmailMessage
-from .task import send_email
+from .tasks import send_email
 from django.template.loader import render_to_string
 from rest_framework_simplejwt.tokens import RefreshToken
 import jwt

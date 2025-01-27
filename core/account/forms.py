@@ -50,7 +50,19 @@ class UserRegistrationForm(forms.ModelForm):
                 'placeholder': 'Enter your password',
                 'required': True,
             }),
+            'password_confirm': forms.PasswordInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Confirm your password',
+                'required': True,
+            }),
         }
+    def clean(self):
+        cleaned_data = super().clean()
+        password = cleaned_data.get('password')
+        password_confirm = cleaned_data.get('password_confirm')
+        if password != password_confirm:
+            raise forms.ValidationError('Passwords do not match')
+        return cleaned_data
 class EmailVerificationResendForm(forms.Form):
     email = forms.EmailField(
         widget=forms.EmailInput(
