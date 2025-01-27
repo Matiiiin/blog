@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'account',
+    'rest_framework_simplejwt'
 ]
 
 MIDDLEWARE = [
@@ -165,3 +166,9 @@ EMAIL_HOST_USER=os.getenv('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD=os.getenv('EMAIL_HOST_PASSWORD')
 EMAIL_USE_TLS=bool(int(os.getenv('EMAIL_USE_TLS')))
 EMAIL_USE_SSL=bool(int(os.getenv('EMAIL_USE_SSL')))
+
+# Celery settings
+CELERY_TIMEZONE = "Asia/Tehran"
+CELERY_TASK_TRACK_STARTED = True
+CELERY_TASK_TIME_LIMIT = 30 * 60
+CELERY_BROKER_URL = 'amqp://guest:guest@rabbitmq:5672//'

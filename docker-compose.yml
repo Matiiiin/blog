@@ -16,6 +16,21 @@ services:
     command: sh -c "python manage.py makemigrations && \
                     python manage.py migrate && \
                     python manage.py runserver 0.0.0.0:8000"
+  celery_worker:
+    build:
+      context: .
+      dockerfile: /dockerfiles/dev/celery/Dockerfile
+    container_name: celery_worker
+    restart: always
+    volumes:
+      - ./core:/app
+    env_file:
+      - ./envs/dev/celery/.env
+    depends_on:
+      - blog_db
+      - rabbitmq
+    command: sh -c "celery -A core worker -l info"
+
   blog_db:
     image: postgres:latest
     container_name: blog_db
@@ -38,3 +53,16 @@ services:
     environment:
       - ServerOptions__Urls=http://*:80
       - ServerOptions__HostName=smtp4dev
+  rabbitmq:
+    container_name: rabbitmq
+    hostname: rabbitmq
+    image: rabbitmq:4-management
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+    ports:
+      - 5672:5672
+      - 15672:15672
+    volumes:
+      - ./rabbitmq/data/:/var/lib/rabbitmq/
+      - ./rabbitmq/log/:/var/log/rabbitmq

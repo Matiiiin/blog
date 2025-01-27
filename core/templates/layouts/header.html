@@ -15,10 +15,6 @@
                         <a href="{% url 'homepage' %}" class="logo m-0 float-start">Blogy<span class="text-primary">.</span></a>
                     </div>
                     <div class="col-8 text-center">
-                        <form action="#" class="search-form d-inline-block d-lg-none">
-                            <input type="text" class="form-control" placeholder="Search...">
-                            <span class="bi-search"></span>
-                        </form>
 
                         <ul class="js-clone-nav d-none d-lg-inline-block text-start site-menu mx-auto">
                             <li class="active"><a href="{% url 'homepage' %}">Home</a></li>
@@ -51,12 +47,12 @@
                     <div class="col-2 text-end">
                         {% if user.is_authenticated %}
                             <div class="dropdown">
-                                <a href="#" class="dropdown-toggle" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                                <a href="#" class="dropdown-toggle text-white" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
                                     <i class="bi bi-person-circle"></i> {{ user.username }}
                                 </a>
                                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
-                                    <li><a class="dropdown-item" href="{% url 'profile' %}">Profile</a></li>
-                                    <li><a class="dropdown-item" href="{% url 'logout' %}">Logout</a></li>
+{#                                    <li><a class="dropdown-item" href="{% url 'profile' %}">Profile</a></li>#}
+                                    <li><a class="dropdown-item" href="{% url 'account:user-logout' %}">Logout</a></li>
                                 </ul>
                             </div>
                         {% else %}

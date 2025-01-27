@@ -175,3 +175,4 @@ core/media/
 *.env.prod
 *-prod.yml
 /smtp4dev-data/
+/rabbitmq/

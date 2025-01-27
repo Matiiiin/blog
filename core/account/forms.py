@@ -51,3 +51,26 @@ class UserRegistrationForm(forms.ModelForm):
                 'required': True,
             }),
         }
+class EmailVerificationResendForm(forms.Form):
+    email = forms.EmailField(
+        widget=forms.EmailInput(
+            attrs={
+                'class': 'form-control',
+                'placeholder': 'Enter your email',
+                'required': True,
+            }
+        )
+    )
+    def clean(self):
+        try:
+            cleaned_data = super().clean()
+            email = cleaned_data.get('email')
+            user = User.objects.filter(email=email).first()
+            if user is None:
+                raise forms.ValidationError('Account associated to this email does not exist')
+            if user.is_verified:
+                raise forms.ValidationError('Account is already verified')
+            cleaned_data['user'] = user
+            return cleaned_data
+        except Exception as e:
+            raise forms.ValidationError(e)
