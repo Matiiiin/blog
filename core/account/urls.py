@@ -6,6 +6,9 @@ urlpatterns = [
     path('register/' , views.RegisterCreateView.as_view() , name='user-register'),
     path('email-verification-resend-form/' , views.EmailVerificationResendFormView.as_view() , name='email-activation-resend-form'),
     path('email-confirmation/<str:token>' , views.EmailConfirmationView.as_view() , name='email-confirmation'),
+    path('forgot-password/', views.ForgotPasswordFormView.as_view(), name='forgot_password'),
+    path('forgot-password-confirmation/', views.ForgotPasswordConfirmFormView.as_view(), name='forgot_password-confirmation'),
+
     path('login/' , views.LoginFormView.as_view() , name='user-login'),
     path('logout/' , views.LogoutView.as_view() , name='user-logout'),
     path('dashboard/' , views.UserDashboardTemplateView.as_view() , name='user-dashboard'),

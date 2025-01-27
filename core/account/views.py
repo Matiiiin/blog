@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.views.generic import TemplateView , FormView , CreateView , View
 from account.models import User
-from .forms import LoginForm ,UserRegistrationForm , EmailVerificationResendForm
+from .forms import LoginForm ,UserRegistrationForm , EmailVerificationResendForm ,ForgotPasswordForm ,ForgotPasswordConfirmForm
 from django.urls import reverse_lazy
 from django.contrib.auth import authenticate , login ,logout
 from django.http import HttpResponse , HttpResponseBadRequest , HttpResponseRedirect
@@ -13,6 +13,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 import jwt
 from django.shortcuts import get_object_or_404
 from django.conf import settings
+from account.utils import make_random_string
 # Create your views here.
 logger = logging.getLogger(__name__)
 class HomePageTemplateView(TemplateView):
@@ -105,7 +106,41 @@ class LogoutView(View):
     def get(self , request):
         logout(request)
         return HttpResponseRedirect(reverse_lazy('account:user-login'))
-
+class ForgotPasswordFormView(FormView):
+    form_class = ForgotPasswordForm
+    template_name = 'account/forgot_password_form.html'
+    success_url = reverse_lazy('account:user-login')
+    def form_valid(self, form):
+        try:
+            user = form.cleaned_data.get('user')
+            temp_password = make_random_string()
+            user.set_password(temp_password)
+            user.save()
+            email_forgot_password_template = render_to_string('account/forgot_password.html' , {'user':user , 'temp_password':temp_password})
+            send_email.delay(
+                subject='Reset password',
+                from_email='noreply@blog.com',
+                recipient_list=[user.email],
+                template=email_forgot_password_template
+            )
+            return super().form_valid(form)
+        except Exception as e:
+            logger.error(f'Exception in Forgot Password, details:{e}')
+            return HttpResponseBadRequest('Sorry there was an error , please try again')
+class ForgotPasswordConfirmFormView(FormView):
+    form_class = ForgotPasswordConfirmForm
+    template_name = 'account/forgot_password_confirm_form.html'
+    success_url = reverse_lazy('account:user-login')
+    def form_valid(self, form):
+        try:
+            user = form.cleaned_data.get('user')
+            new_password = form.cleaned_data.get('new_password')
+            user.set_password(new_password)
+            user.save()
+            return super().form_valid(form)
+        except Exception as e:
+            logger.error(f'Exception in Forgot Password Confirm, details:{e}')
+            return HttpResponseBadRequest('Sorry there was an error , please try again')
 class UserDashboardTemplateView(TemplateView):
     template_name = 'account/user_dashboard.html'
     def get_context_data(self, **kwargs):
