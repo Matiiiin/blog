@@ -5,12 +5,14 @@ from rest_framework.decorators import action
 from rest_framework import status
 from django.contrib.auth import get_user_model
 from django.contrib.auth import login, logout
-from .serializers import RegisterSerializer,LoginSerializer ,VerificationResendSerializer ,ForgotPasswordSerializer,ForgotPasswordConfirmSerializer
+from .serializers import RegisterSerializer,LoginSerializer,CustomAuthTokenSerializer ,VerificationResendSerializer ,ForgotPasswordSerializer,ForgotPasswordConfirmSerializer
 from django.template.loader import render_to_string
 from rest_framework_simplejwt.tokens import RefreshToken
 from account.tasks import send_email
 import logging
 from account.utils import make_random_string
+from rest_framework.authtoken.views import ObtainAuthToken
+from rest_framework.authtoken.models import Token
 
 logger = logging.getLogger(__name__)
 
@@ -18,7 +20,6 @@ class AuthGenericViewSet(viewsets.GenericViewSet):
     """
     a class for handling authentication
     """
-
     def get_serializer_class(self):
         serializers = {
             'register': RegisterSerializer,
@@ -98,3 +99,19 @@ class AuthGenericViewSet(viewsets.GenericViewSet):
         user.set_password(new_password)
         user.save()
         return Response({'details': 'Password changed successfully'}, status=status.HTTP_200_OK)
+
+class CustomAuthToken(ObtainAuthToken):
+    serializer_class = CustomAuthTokenSerializer
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.serializer_class(data=request.data,
+                                           context={'request': request})
+        serializer.is_valid(raise_exception=True)
+        user = serializer.validated_data['user']
+        token, created = Token.objects.get_or_create(user=user)
+        return Response({
+            'token': token.key,
+            'user_id': user.pk,
+            'email': user.email
+        })
+

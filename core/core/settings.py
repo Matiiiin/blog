@@ -39,7 +39,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'account',
     'rest_framework_simplejwt',
-    'rest_framework'
+    'rest_framework',
+    'rest_framework.authtoken',
+    'drf_spectacular'
 ]
 
 MIDDLEWARE = [
@@ -173,3 +175,23 @@ CELERY_TIMEZONE = "Asia/Tehran"
 CELERY_TASK_TRACK_STARTED = True
 CELERY_TASK_TIME_LIMIT = 30 * 60
 CELERY_BROKER_URL = 'amqp://guest:guest@rabbitmq:5672//'
+
+# REST_FRAMEWORK
+REST_FRAMEWORK = {
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+        # 'rest_framework.authentication.BasicAuthentication',
+    ]
+}
+
+#Spectacular settings
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'Blogy API',
+    'DESCRIPTION': 'API for Blogy project',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
+    # OTHER SETTINGS
+}
