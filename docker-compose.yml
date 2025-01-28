@@ -2,7 +2,7 @@ services:
   blog:
     build:
       context: .
-      dockerfile: /dockerfiles/dev/django/Dockerfile
+      dockerfile: ./dockerfiles/dev/django/Dockerfile
     container_name: blog
     restart: always
     ports:
@@ -19,7 +19,7 @@ services:
   celery_worker:
     build:
       context: .
-      dockerfile: /dockerfiles/dev/celery/Dockerfile
+      dockerfile: ./dockerfiles/dev/celery/Dockerfile
     container_name: celery_worker
     restart: always
     volumes:
