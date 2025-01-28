@@ -28,6 +28,9 @@ class TestCustomTokenLoginApi:
         self, api_client, common_user
     ):
         data = {"username": "test", "password": "123"}
+        user = common_user
+        user.is_verified = True
+        user.save()
         response = api_client.post(self.url, data=data)
         assert response.status_code == 200
         assert "token" in response.json()

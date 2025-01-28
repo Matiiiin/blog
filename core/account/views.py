@@ -27,6 +27,8 @@ import jwt
 from django.shortcuts import get_object_or_404
 from django.conf import settings
 from account.utils import make_random_string
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.shortcuts import render
 
 # Create your views here.
 logger = logging.getLogger(__name__)
@@ -177,16 +179,14 @@ class LoginFormView(FormView):
             )
 
 
-class LogoutView(View):
+class LogoutView(LoginRequiredMixin, View):
     """
     Logout the user
     """
 
     def get(self, request):
         logout(request)
-        return HttpResponseRedirect(
-            reverse_lazy("account:user-login")
-        )
+        return HttpResponseRedirect(settings.LOGOUT_REDIRECT_URL)
 
 
 class ForgotPasswordFormView(FormView):
@@ -204,9 +204,14 @@ class ForgotPasswordFormView(FormView):
             temp_password = make_random_string()
             user.set_password(temp_password)
             user.save()
+            token = RefreshToken.for_user(user)
             email_forgot_password_template = render_to_string(
                 "account/forgot_password.html",
-                {"user": user, "temp_password": temp_password},
+                {
+                    "user": user,
+                    "temp_password": temp_password,
+                    "token": str(token),
+                },
             )
             send_email.delay(
                 subject="Reset password",
@@ -231,23 +236,19 @@ class ForgotPasswordConfirmFormView(FormView):
     template_name = "account/forgot_password_confirm_form.html"
     success_url = reverse_lazy("account:user-login")
 
-    def form_valid(self, form):
-        try:
+    def post(self, request, *args, **kwargs):
+        form = self.form_class(data=request.POST)
+        form.context = {"token": kwargs.get("token")}
+        if form.is_valid():
             user = form.cleaned_data.get("user")
             new_password = form.cleaned_data.get("new_password")
             user.set_password(new_password)
             user.save()
-            return super().form_valid(form)
-        except Exception as e:
-            logger.error(
-                f"Exception in Forgot Password Confirm, details:{e}"
-            )
-            return HttpResponseBadRequest(
-                "Sorry there was an error , please try again"
-            )
+            return HttpResponseRedirect(self.success_url)
+        return render(request, self.template_name, {"form": form})
 
 
-class UserDashboardTemplateView(TemplateView):
+class UserDashboardTemplateView(LoginRequiredMixin, TemplateView):
     """
     Shows the user dashboard
     """

@@ -21,12 +21,12 @@ urlpatterns = [
     path(
         "forgot-password/",
         views.ForgotPasswordFormView.as_view(),
-        name="forgot_password",
+        name="forgot-password",
     ),
     path(
-        "forgot-password-confirmation/",
+        "forgot-password-confirmation/<str:token>",
         views.ForgotPasswordConfirmFormView.as_view(),
-        name="forgot_password-confirmation",
+        name="forgot-password-confirmation",
     ),
     path("login/", views.LoginFormView.as_view(), name="user-login"),
     path("logout/", views.LogoutView.as_view(), name="user-logout"),

@@ -98,7 +98,7 @@ class AuthGenericViewSet(viewsets.GenericViewSet):
         user = serializer.validated_data["user"]
         token = RefreshToken.for_user(user)
         email_verification_template = render_to_string(
-            "account/email_verification.html",
+            "account/email_verification_resend.html",
             {"token": token, "user": user},
         )
         send_email.delay(

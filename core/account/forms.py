@@ -1,6 +1,8 @@
 from django import forms
 from account.models import User
 from django.shortcuts import get_object_or_404
+import jwt
+from django.conf import settings
 
 
 class LoginForm(forms.Form):
@@ -28,16 +30,28 @@ class LoginForm(forms.Form):
         username = cleaned_data.get("username")
         password = cleaned_data.get("password")
         user = User.objects.filter(username=username).first()
-        if not user.is_verified:
-            raise forms.ValidationError("Account is not verified")
         if user is None:
             raise forms.ValidationError("Invalid username")
-        if not user.check_password(password):
-            raise forms.ValidationError("Invalid password")
+        else:
+            if not user.is_verified:
+                raise forms.ValidationError("Account is not verified")
+            if not user.check_password(password):
+                raise forms.ValidationError("Invalid password")
+
         return cleaned_data
 
 
 class UserRegistrationForm(forms.ModelForm):
+    password_confirm = forms.CharField(
+        widget=forms.PasswordInput(
+            attrs={
+                "class": "form-control",
+                "placeholder": "Confirm your password",
+                "required": True,
+            }
+        )
+    )
+
     class Meta:
         model = User
         fields = ["username", "email", "password"]
@@ -134,15 +148,6 @@ class ForgotPasswordForm(forms.Form):
 
 
 class ForgotPasswordConfirmForm(forms.Form):
-    email = forms.EmailField(
-        widget=forms.EmailInput(
-            attrs={
-                "class": "form-control",
-                "placeholder": "Enter your email",
-                "required": True,
-            }
-        )
-    )
     current_password = forms.CharField(
         widget=forms.PasswordInput(
             attrs={
@@ -174,13 +179,16 @@ class ForgotPasswordConfirmForm(forms.Form):
     def clean(self):
         try:
             cleaned_data = super().clean()
-            email = cleaned_data.get("email")
+            token = self.context.get("token")
+            user_id = jwt.decode(
+                token, settings.SECRET_KEY, algorithms=["HS256"]
+            ).get("user_id")
             current_password = cleaned_data.get("current_password")
             new_password = cleaned_data.get("new_password")
             new_password_confirm = cleaned_data.get(
                 "new_password_confirm"
             )
-            user = get_object_or_404(User, email=email)
+            user = get_object_or_404(User, pk=user_id)
 
             if not user.check_password(current_password):
                 raise forms.ValidationError(
@@ -190,5 +198,11 @@ class ForgotPasswordConfirmForm(forms.Form):
                 raise forms.ValidationError("Passwords do not match")
             cleaned_data["user"] = user
             return cleaned_data
+        except jwt.exceptions.InvalidSignatureError:
+            raise forms.ValidationError("Invalid token")
+        except jwt.exceptions.DecodeError:
+            raise forms.ValidationError("Invalid token")
+        except jwt.exceptions.ExpiredSignatureError:
+            raise forms.ValidationError("Token has expired")
         except Exception as e:
             raise forms.ValidationError(e)
