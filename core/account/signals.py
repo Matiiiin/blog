@@ -5,6 +5,8 @@ from account.models import User, Profile
 """
 save a profile for the created user
 """
+
+
 @receiver(post_save, sender=User)
 def create_profile_for_user(sender, instance, created, **kwargs):
     if created:
