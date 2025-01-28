@@ -148,7 +148,7 @@ class AuthGenericViewSet(viewsets.GenericViewSet):
     @action(
         methods=["POST"],
         detail=False,
-        url_path="forgot-password-confirmation/(?P<token>[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+)", # noqa
+        url_path="forgot-password-confirmation/(?P<token>[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+\.[A-Za-z0-9-_]+)",  # noqa
         url_name="forgot-password-confirmation",
     )
     def forgot_password_confirmation(self, request, token):
@@ -167,6 +167,10 @@ class AuthGenericViewSet(viewsets.GenericViewSet):
 
 
 class CustomAuthTokenLogin(ObtainAuthToken):
+    """
+    Login and generate a token for user in databsase
+    """
+
     serializer_class = CustomAuthTokenSerializer
 
     def post(self, request, *args, **kwargs):
@@ -186,6 +190,10 @@ class CustomAuthTokenLogin(ObtainAuthToken):
 
 
 class CustomAuthTokenLogout(APIView):
+    """
+    Delete the token of user in database
+    """
+
     permission_classes = [IsAuthenticated]
 
     def post(self, request):

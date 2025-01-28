@@ -28,6 +28,8 @@ class LoginForm(forms.Form):
         username = cleaned_data.get("username")
         password = cleaned_data.get("password")
         user = User.objects.filter(username=username).first()
+        if not user.is_verified:
+            raise forms.ValidationError("Account is not verified")
         if user is None:
             raise forms.ValidationError("Invalid username")
         if not user.check_password(password):

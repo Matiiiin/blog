@@ -33,10 +33,18 @@ logger = logging.getLogger(__name__)
 
 
 class HomePageTemplateView(TemplateView):
+    """
+    Shows index view of website
+    """
+
     template_name = "index.html"
 
 
 class RegisterCreateView(CreateView):
+    """
+    Fill in the form and user is created in database
+    """
+
     model = User
     form_class = UserRegistrationForm
     template_name_suffix = "_register"
@@ -78,6 +86,10 @@ class RegisterCreateView(CreateView):
 
 
 class EmailConfirmationView(View):
+    """
+    Verifies the user email
+    """
+
     def get(self, request, token):
         try:
             user_id = jwt.decode(
@@ -105,6 +117,10 @@ class EmailConfirmationView(View):
 
 
 class EmailVerificationResendFormView(FormView):
+    """
+    Shows the form for sending email
+    """
+
     form_class = EmailVerificationResendForm
     template_name = "account/email_verification_resend-form.html"
     success_url = reverse_lazy("account:user-login")
@@ -134,6 +150,10 @@ class EmailVerificationResendFormView(FormView):
 
 
 class LoginFormView(FormView):
+    """
+    A form for logging user in
+    """
+
     form_class = LoginForm
     template_name = "account/user_login.html"
     success_url = reverse_lazy("account:user-dashboard")
@@ -158,6 +178,10 @@ class LoginFormView(FormView):
 
 
 class LogoutView(View):
+    """
+    Logout the user
+    """
+
     def get(self, request):
         logout(request)
         return HttpResponseRedirect(
@@ -166,6 +190,10 @@ class LogoutView(View):
 
 
 class ForgotPasswordFormView(FormView):
+    """
+    A form for requesting a new password threw email
+    """
+
     form_class = ForgotPasswordForm
     template_name = "account/forgot_password_form.html"
     success_url = reverse_lazy("account:user-login")
@@ -195,6 +223,10 @@ class ForgotPasswordFormView(FormView):
 
 
 class ForgotPasswordConfirmFormView(FormView):
+    """
+    Confirming user changing password
+    """
+
     form_class = ForgotPasswordConfirmForm
     template_name = "account/forgot_password_confirm_form.html"
     success_url = reverse_lazy("account:user-login")
@@ -216,6 +248,10 @@ class ForgotPasswordConfirmFormView(FormView):
 
 
 class UserDashboardTemplateView(TemplateView):
+    """
+    Shows the user dashboard
+    """
+
     template_name = "account/user_dashboard.html"
 
     def get_context_data(self, **kwargs):
