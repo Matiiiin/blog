@@ -1,4 +1,4 @@
-name: Todoapp Docker Image CI/CD
+name: Blog Docker Image CI/CD
 
 on:
   push:
@@ -14,4 +14,4 @@ jobs:
     - name: Build Blog Docker image
       run: docker compose up -d
     - name: Run tests
-      run: docker exec todoapp sh -c "pytest ."
+      run: docker exec blog  sh -c "pytest ."
