@@ -3,14 +3,12 @@ from django.template.defaultfilters import slugify
 
 # Create your models here.
 class Image(models.Model):
-    image = models.ImageField(upload_to='images/')
+    image = models.ImageField(upload_to='posts/images/')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     def __str__(self):
         return self.image.url
 
-    def __str__(self):
-        return self.name
 class Category(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField()
@@ -26,7 +24,7 @@ class Post(models.Model):
     images = models.ManyToManyField('Image', related_name='posts')
     title = models.CharField(max_length=100 , unique=True , blank=False , null=False)
     slug = models.SlugField(max_length=100 , unique=True , blank=True , null=True)
-    hero_image = models.ImageField(upload_to='post_images/')
+    hero_image = models.ImageField(upload_to='posts/hero_images/')
     short_content = models.TextField()
     main_content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
