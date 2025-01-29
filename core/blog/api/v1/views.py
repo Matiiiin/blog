@@ -5,8 +5,8 @@ from rest_framework.decorators import action
 from rest_framework import status
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter, OrderingFilter
-from blog.models import Post , Image
-from .serializers import PostModelSerializer , ImageModelSerializer
+from blog.models import Post , Image , Category
+from .serializers import PostModelSerializer , ImageModelSerializer , CategoryModelSerializer
 from rest_framework.generics import ListCreateAPIView , RetrieveUpdateDestroyAPIView
 from .permissions import IsVerifiedUser , IsOwner
 from .paginations import PostPagination
@@ -106,3 +106,11 @@ class ImageGenericViewSet(viewsets.GenericViewSet):
         except Exception as e:
             logger.error(e)
             return Response({'details':str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+class CategoryModelViewSet(viewsets.ModelViewSet):
+    serializer_class = CategoryModelSerializer
+    queryset = Category.objects.all()
+    def get_permissions(self):
+        if self.request.method == 'GET':
+            return [IsAuthenticated()]
+        return [IsAuthenticated(), IsAdminUser() , IsVerifiedUser()]

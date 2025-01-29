@@ -4,6 +4,7 @@ from . import views
 app_name = 'api-v1'
 router = DefaultRouter()
 router.register('image', views.ImageGenericViewSet, basename='image')
+router.register('category', views.CategoryModelViewSet, basename='category')
 urlpatterns = [
     path('post/', views.PostListCreateAPIView.as_view(), name='post-list-create'),
     path('post/<slug:slug>', views.PostRetrieveUpdateDestroyAPIView.as_view(), name='post-retrieve-update-destroy'),
