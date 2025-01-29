@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "account",
+    'blog',
     "rest_framework_simplejwt",
     "rest_framework",
     "rest_framework.authtoken",
