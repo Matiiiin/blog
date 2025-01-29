@@ -1,6 +1,6 @@
 import pytest
 from rest_framework.test import APIClient
-from blog.models import Post, Category, Tag, Image
+from blog.models import Post, Category, Image
 from account.models import Profile
 from django.contrib.auth import get_user_model
 from django.core.files.uploadedfile import SimpleUploadedFile
@@ -21,15 +21,11 @@ def category(db):
     return Category.objects.create(name='TestCategory', description='Test Description')
 
 @pytest.fixture
-def tag(db):
-    return Tag.objects.create(name='TestTag')
-
-@pytest.fixture
 def image(db):
     return Image.objects.create(image='test_image.jpg')
 
 @pytest.fixture
-def post(db, user, category, tag, image):
+def post(db, user, category, image):
     post = Post.objects.create(
         author=user.profile,
         category=category,
@@ -38,7 +34,6 @@ def post(db, user, category, tag, image):
         short_content='Short content',
         main_content='Main content'
     )
-    post.tags.add(tag)
     post.images.add(image)
     return post
 

@@ -9,11 +9,6 @@ class Image(models.Model):
     def __str__(self):
         return self.image.url
 
-class Tag(models.Model):
-    name = models.CharField(max_length=100)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
     def __str__(self):
         return self.name
 class Category(models.Model):
@@ -29,7 +24,6 @@ class Post(models.Model):
     author = models.ForeignKey('account.Profile', on_delete=models.CASCADE , related_name='posts')
     category = models.ForeignKey('Category', on_delete=models.CASCADE , related_name='posts')
     images = models.ManyToManyField('Image', related_name='posts')
-    tags = models.ManyToManyField('Tag', related_name='posts')
     title = models.CharField(max_length=100 , unique=True , blank=False , null=False)
     slug = models.SlugField(max_length=100 , unique=True , blank=True , null=True)
     hero_image = models.ImageField(upload_to='post_images/')
