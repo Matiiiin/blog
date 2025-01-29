@@ -16,13 +16,13 @@ class TestPostListCreateAPIView:
         assert response.status_code == status.HTTP_200_OK
         assert len(response.data['results']) == 1
 
-    def test_create_post(self, api_client, user, category, image ,hero_image):
+    def test_create_post(self, api_client, user, category, image ,image_file):
         api_client.force_authenticate(user=user)
         data = {
             'title': 'New Post',
             'category': category.id,
             'images': [image.id],
-            'hero_image': hero_image,
+            'hero_image': image_file,
             'short_content': 'New short content',
             'main_content': 'New main content'
         }

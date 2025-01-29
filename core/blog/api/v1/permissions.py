@@ -8,7 +8,7 @@ class IsVerifiedUser(BasePermission):
             raise PermissionDenied('Please verify your email address first.')
         return True
 
-class IsPostOwner(BasePermission):
+class IsOwner(BasePermission):
     def has_object_permission(self, request, view, obj):
         if obj.author != request.user.profile:
             raise PermissionDenied('You are not the owner of this post.')
