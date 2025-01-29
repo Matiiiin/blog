@@ -11,5 +11,5 @@ class IsVerifiedUser(BasePermission):
 class IsOwner(BasePermission):
     def has_object_permission(self, request, view, obj):
         if obj.author != request.user.profile:
-            raise PermissionDenied('You are not the owner of this post.')
+            raise PermissionDenied('You are not the owner of this object.')
         return True
