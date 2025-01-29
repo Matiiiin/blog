@@ -30,6 +30,7 @@ from drf_spectacular.views import (
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("account/", include("account.urls")),
+    path("blog/", include("blog.urls")),
     path("swagger/", SpectacularAPIView.as_view(), name="schema"),
     # Optional UI:
     path(

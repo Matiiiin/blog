@@ -49,6 +49,8 @@ class AuthGenericViewSet(viewsets.GenericViewSet):
         serializer = RegisterSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.save()
+        user.set_password(serializer.validated_data["password"])
+        user.save()
         # send verification email
         token = RefreshToken.for_user(user)
         email_verification_template = render_to_string(
