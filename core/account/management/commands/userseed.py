@@ -17,10 +17,6 @@ class Command(BaseCommand):
         self.create_users()
 
 
-
-
-
-
     def flush_table(self ,model):
         self.stdout.write('Flushing data from User table...\n')
         table_name = model._meta.db_table
