@@ -1,9 +1,12 @@
 {% extends "main_master.html" %}
 {% load static %}
 {% block content %}
-    <h1>Home</h1>
-    <p>Welcome to the home page!</p>
-    <p>Welcome to the home page!</p>
-    <p>Welcome to the home page!</p>
-    <img src="{% static 'images/home.jpg' %}" alt="Home">
+{#	Start retroy layout blog posts#}
+    {% include 'home/retroy_layout.html' %}
+{#	End retroy layout blog posts#}
+
+{#    start technology category#}
+    {% include 'home/technology_category.html' %}
+{#    end technology category#}
+
 {% endblock %}
