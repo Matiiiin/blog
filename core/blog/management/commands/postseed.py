@@ -230,9 +230,10 @@ class Command(BaseCommand):
                     short_content=post_data["short_content"],
                     main_content=post_data["main_content"]
                 )
+                self.stdout.write(self.style.SUCCESS(f"Successfully created post '{post.title}'"))
                 for image_path in post_data["images"]:
                     post.images.create(image=image_path)
-
+                    self.stdout.write(self.style.SUCCESS(f"Successfully added image '{image_path}' to post '{post.title}'"))
 
         except Exception as e:
             raise CommandError(f"Error: {e}")
