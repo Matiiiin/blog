@@ -4,6 +4,9 @@ from django.contrib.auth import get_user_model
 from account.signals import create_profile_for_user
 from django.db import connection
 from account.models import Profile
+
+from faker import Faker
+fake = Faker()
 User = get_user_model()
 
 class Command(BaseCommand):
@@ -83,8 +86,31 @@ class Command(BaseCommand):
                 user.set_password(account["password"])
                 user.save()
                 self.stdout.write(self.style.SUCCESS(f"User {user.username} created successfully"))
+
             for account_profile in account_profiles:
                 profile = Profile.objects.create(**account_profile)
+                self.stdout.write(self.style.SUCCESS(f"Profile for {profile.user} created successfully"))
+
+            for i in range(15):
+                user = User.objects.create(
+                    username=fake.user_name(),
+                    email=fake.email(),
+                    password="asd",
+                    is_superuser=False,
+                    is_staff=False,
+                    is_active=True,
+                    is_verified=True,
+                )
+                user.set_password("asd")
+                user.save()
+                self.stdout.write(self.style.SUCCESS(f"User {user.username} created successfully"))
+                profile = Profile.objects.create(
+                    user=user,
+                    first_name=fake.first_name(),
+                    last_name=fake.last_name(),
+                    bio=fake.text(),
+                    image="account/profile/default.jpg",
+                )
                 self.stdout.write(self.style.SUCCESS(f"Profile for {profile.user} created successfully"))
             signals.post_save.connect(sender=User, receiver=create_profile_for_user)
 
