@@ -10549,6 +10549,13 @@ html, body {
     overflow: hidden;
     text-overflow: ellipsis;
 }
+.short_content_culture {
+    display: -webkit-box;
+    -webkit-line-clamp: 4; /* Limit to 3 lines */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
 .last_month_4_posts {
     display: -webkit-box;
     -webkit-line-clamp: 4; /* Limit to 3 lines */
