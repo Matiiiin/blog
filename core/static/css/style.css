@@ -516,6 +516,9 @@ progress {
     /*top: 0;*/
     object-fit: cover;
 }
+.author_img-fluid {
+  max-width: 100%;
+  height: auto; }
 
 .img-thumbnail {
   padding: 0.25rem;
@@ -10550,6 +10553,13 @@ html, body {
     text-overflow: ellipsis;
 }
 .short_content_culture {
+    display: -webkit-box;
+    -webkit-line-clamp: 4; /* Limit to 3 lines */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.short_content_fashion {
     display: -webkit-box;
     -webkit-line-clamp: 4; /* Limit to 3 lines */
     -webkit-box-orient: vertical;
