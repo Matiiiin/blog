@@ -10593,3 +10593,8 @@ html, body {
   height: 400px;
   z-index: 1;
 }
+.post-detail-author-image{
+  height: 70px;
+  width: 50px;
+  border-radius: 50%;
+}

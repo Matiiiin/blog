@@ -1,0 +1,55 @@
+{% extends 'main_master.html' %}
+{% block content %}
+    {% include './top_cover_image.html' with post=post%}
+  <section class="section">
+    <div class="container">
+
+      <div class="row blog-entries element-animate">
+
+        <div class="col-md-12 col-lg-8 main-content">
+
+            {% include './post_body.html' with post=post%}
+
+          <div class="pt-5">
+            <p>Category:
+                <a href="{% url 'blog:category-result' category_name=post.category.name %}">{{ post.category }}</a>
+            </p>
+          </div>
+            {% include './comments.html' with post=post comment_form=comment_form %}
+        </div>
+
+
+        <div class="col-md-12 col-lg-4 sidebar">
+          {% include './author.html' %}
+
+          {% include './sidebar.html' %}
+        </div>
+
+      </div>
+    </div>
+  </section>`
+
+  <section class="section posts-entry posts-entry-sm bg-light">
+    <div class="container">
+      <div class="row mb-4">
+        <div class="col-12 text-uppercase text-black">More Blog Posts</div>
+      </div>
+      <div class="row">
+            {% for more_post in more_posts %}
+
+        <div class="col-md-6 col-lg-3">
+          <div class="blog-entry">
+            <a href="{% url 'blog:post-detail' slug=more_post.slug %}" class="img-link">
+              <img src="{{ more_post.hero_image.url}}" alt="Image" class="img-fluid">
+            </a>
+            <span class="date">{{ more_post.created_at | date}}</span>
+            <h2><a href="{% url 'blog:post-detail' slug=more_post.slug %}">{{ more_post.title | title }}</a></h2>
+            <p>{{ more_post.short_content |truncatewords:25}}</p>
+            <p><a href="{% url 'blog:post-detail' slug=more_post.slug %}" class="read-more">Continue Reading</a></p>
+          </div>
+        </div>
+            {% endfor %}
+      </div>
+    </div>
+  </section>
+{% endblock %}
