@@ -1,0 +1,51 @@
+{% load latest_4_travel_posts %}
+{% latest_4_travel_posts as posts %}
+<div class="section bg-light">
+    <div class="container">
+
+        <div class="row mb-4">
+            <div class="col-sm-6">
+                <h2 class="posts-entry-title">Travel</h2>
+            </div>
+            <div class="col-sm-6 text-sm-end"><a href="category.html" class="read-more">View All</a></div>
+        </div>
+
+        <div class="row align-items-stretch retro-layout-alt">
+
+            <div class="col-md-5 order-md-2">
+                <a href="single.html" class="hentry img-1 h-100 gradient">
+                    <div class="featured-img" style="background-image: url('{{ posts.0.hero_image.url }}');"></div>
+                    <div class="text">
+                        <span>{{ posts.0.created_at | date }}</span>
+                        <h2>{{ posts.0.title | title }}</h2>
+                    </div>
+                </a>
+            </div>
+
+            <div class="col-md-7">
+
+                <a href="single.html" class="hentry img-2 v-height mb30 gradient">
+                    <div class="featured-img" style="background-image: url('{{ posts.1.hero_image.url }}');"></div>
+                    <div class="text text-sm">
+                        <span>{{ posts.1.created_at | date }}</span>
+                        <h2>{{ posts.1.title |title }}</h2>
+                    </div>
+                </a>
+
+                <div class="two-col d-block d-md-flex justify-content-between">
+                    {% for post in posts|slice:"2:4" %}
+                    <a href="single.html" class="hentry v-height img-2 gradient">
+                        <div class="featured-img" style="background-image: url('{{ post.hero_image.url }}');"></div>
+                        <div class="text text-sm">
+                            <span>{{ post.created_at | date }}</span>
+                            <h2>{{ post.title | title }}</h2>
+                        </div>
+                    </a>
+                    {% endfor %}
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</div>
