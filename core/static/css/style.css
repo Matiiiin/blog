@@ -10598,3 +10598,16 @@ html, body {
   width: 50px;
   border-radius: 50%;
 }
+/* Add this CSS to your stylesheet */
+.header-search-form {
+    display: inline-block;
+    margin: 0;
+    padding: 0;
+}
+
+.header-search-form input[type="text"] {
+    width: 200px; /* Adjust the width as needed */
+    height: 30px; /* Adjust the height as needed */
+    padding: 5px;
+    font-size: 14px;
+}

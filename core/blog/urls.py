@@ -8,4 +8,5 @@ urlpatterns = [
     path('comment/<int:comment_id>/comment-reply/create/' , views.CommentReplyView.as_view() , name='comment-reply-create'),
     path('post/<slug:post_slug>/comment/create' , views.CommentView.as_view() , name='comment-create'),
     path('' , views.PostListView.as_view() , name='post-list'),
+    path('search/' , views.SearchTemplateView.as_view() , name='post-search'),
 ]

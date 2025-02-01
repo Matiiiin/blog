@@ -5,6 +5,7 @@ from .models import Category , Post , CommentReply,Comment
 from django.db.models import Count
 from django.shortcuts import redirect
 from .forms import CommentForm
+from django.db.models import Q
 
 class CategoryResultTemplateView(ListView):
     template_name = 'blog/category_result_page/main.html'
@@ -61,8 +62,31 @@ class PostListView(ListView):
     paginate_by = 5
     model = Post
     context_object_name = 'posts'
+    ordering = '-created_at'
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
+        context['popular_posts'] = Post.objects.annotate(num_comments=Count('comments')).order_by('-num_comments')[:3]
+        context['categories'] = Category.objects.annotate(num_posts=Count('posts')).order_by('-num_posts')
+        return context
+class SearchTemplateView(ListView):
+    template_name = 'blog/search_result_page/main.html'
+    paginate_by = 5
+    context_object_name = 'posts'
+    page_kwarg = "page"
+    ordering = '-created_at'
+    def get_queryset(self):
+        search = self.request.GET.get('search')
+        posts = Post.objects.filter(
+            Q(title__icontains=search) |
+            Q(main_content__icontains=search) |
+            Q(short_content__icontains=search) |
+            Q(author__first_name__icontains=search) |
+            Q(author__last_name__icontains=search)
+        ).all()
+        return posts
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['search'] = self.request.GET.get('search')
         context['popular_posts'] = Post.objects.annotate(num_comments=Count('comments')).order_by('-num_comments')[:3]
         context['categories'] = Category.objects.annotate(num_posts=Count('posts')).order_by('-num_posts')
         return context
