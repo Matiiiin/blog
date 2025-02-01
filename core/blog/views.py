@@ -56,3 +56,13 @@ class CommentView(View):
             content=request.POST.get('content')
         )
         return redirect('blog:post-detail' , slug=post_slug)
+class PostListView(ListView):
+    template_name = 'blog/post_list_page/main.html'
+    paginate_by = 5
+    model = Post
+    context_object_name = 'posts'
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['popular_posts'] = Post.objects.annotate(num_comments=Count('comments')).order_by('-num_comments')[:3]
+        context['categories'] = Category.objects.annotate(num_posts=Count('posts')).order_by('-num_posts')
+        return context

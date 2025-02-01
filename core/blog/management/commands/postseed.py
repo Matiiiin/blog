@@ -340,7 +340,7 @@ class Command(BaseCommand):
                 {
                     "author_id": 3,
                     "category_id": categories.filter(name='Fashion').first().id,
-                    "images": ["posts/images/gender_neutral_fashion_1.jpg" , "posts/images/gender_neutral_fashion_2.jpg" , "posts/gender_neutral_fashion_3.jpg"],
+                    "images": ["posts/images/gender_neutral_fashion_1.jpg" , "posts/images/gender_neutral_fashion_2.jpg" , "posts/images/gender_neutral_fashion_3.jpg"],
                     "hero_image": "posts/hero_images/gender_neutral_fashion.jpg",
                     "title": "The Evolution of Gender-Neutral Fashion",
                     "short_content": "Gender-neutral fashion is breaking down traditional boundaries in clothing. Designers are creating collections that transcend gender norms. This trend reflects a broader cultural shift toward inclusivity and self-expression. Gender-neutral fashion empowers individuals to wear what resonates with them, regardless of societal expectations.",
