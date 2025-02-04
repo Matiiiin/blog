@@ -30,8 +30,8 @@
 					<div class="row text-start pt-5 border-top">
 						<div class="col-md-12">
                             {% if page_obj.has_previous %}
-                                <a href="?page=1">&laquo; First</a>
-                                <a href="?page={{ page_obj.previous_page_number }}">Previous</a>
+                                <a href="?page=1&search={{ search }}">&laquo; First</a>
+                                <a href="?page={{ page_obj.previous_page_number }}&search={{ search }}">Previous</a>
                             {% endif %}
 
                             <span>
@@ -39,8 +39,8 @@
                             </span>
 
                             {% if page_obj.has_next %}
-                                <a href="?page={{ page_obj.next_page_number }}">Next</a>
-                                <a href="?page={{ page_obj.paginator.num_pages }}">Last &raquo;</a>
+                                <a href="?page={{ page_obj.next_page_number }}&search={{ search }}">Next</a>
+                                <a href="?page={{ page_obj.paginator.num_pages }}&search={{ search }}">Last &raquo;</a>
                             {% endif %}
 						</div>
 					</div>

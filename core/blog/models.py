@@ -3,7 +3,7 @@ from django.template.defaultfilters import slugify
 
 # Create your models here.
 class Image(models.Model):
-    image = models.ImageField(upload_to='posts/images/')
+    image = models.ImageField(upload_to='posts/images/' , unique=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     def __str__(self):

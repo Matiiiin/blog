@@ -2,8 +2,24 @@ from django import forms
 from account.models import User , ContactUs
 from django.shortcuts import get_object_or_404
 import jwt
+from blog.models import Post
 from django.conf import settings
 
+class MultipleFileInput(forms.ClearableFileInput):
+    allow_multiple_selected = True
+
+class MultipleFileField(forms.FileField):
+    def __init__(self, *args, **kwargs):
+        kwargs.setdefault("widget", MultipleFileInput())
+        super().__init__(*args, **kwargs)
+
+    def clean(self, data, initial=None):
+        single_file_clean = super().clean
+        if isinstance(data, (list, tuple)):
+            result = [single_file_clean(d, initial) for d in data]
+        else:
+            result = [single_file_clean(data, initial)]
+        return result
 
 class LoginForm(forms.Form):
     username = forms.CharField(
@@ -237,6 +253,50 @@ class ContactUsForm(forms.ModelForm):
                 attrs={
                     "class": "form-control",
                     "placeholder": "Message",
+                    "rows": 7,
+                    "cols": 30,
+                    "required": True,
+                }
+            ),
+        }
+class UserPostCreateForm(forms.ModelForm):
+    images = MultipleFileField()
+    class Meta:
+        model = Post
+        fields = ["category" , "title" , "hero_image" , "images" , "short_content" , "main_content" ]
+        widgets = {
+            "category": forms.Select(
+                attrs={
+                    "class": "form-control",
+                    "required": True,
+                }
+            ),
+            "title": forms.TextInput(
+                attrs={
+                    "class": "form-control",
+                    "placeholder": "Title",
+                    "required": True,
+                }
+            ),
+            "hero_image": forms.FileInput(
+                attrs={
+                    "class": "form-control",
+                    "required": True,
+                }
+            ),
+            "short_content": forms.Textarea(
+                attrs={
+                    "class": "form-control",
+                    "placeholder": "Short content",
+                    "rows": 7,
+                    "cols": 30,
+                    "required": True,
+                }
+            ),
+            "main_content": forms.Textarea(
+                attrs={
+                    "class": "form-control",
+                    "placeholder": "Main content",
                     "rows": 7,
                     "cols": 30,
                     "required": True,
