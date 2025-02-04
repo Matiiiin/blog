@@ -303,3 +303,46 @@ class UserPostCreateForm(forms.ModelForm):
                 }
             ),
         }
+class UserPostUpdateForm(forms.ModelForm):
+    images = MultipleFileField()
+    class Meta:
+        model = Post
+        fields = ["category" , "title" , "hero_image" , "images" , "short_content" , "main_content" ]
+        widgets = {
+            "category": forms.Select(
+                attrs={
+                    "class": "form-control",
+                    "required": True,
+                }
+            ),
+            "title": forms.TextInput(
+                attrs={
+                    "class": "form-control",
+                    "placeholder": "Title",
+                    "required": True,
+                }
+            ),
+            "hero_image": forms.FileInput(
+                attrs={
+                    "class": "form-control",
+                }
+            ),
+            "short_content": forms.Textarea(
+                attrs={
+                    "class": "form-control",
+                    "placeholder": "Short content",
+                    "rows": 7,
+                    "cols": 30,
+                    "required": True,
+                }
+            ),
+            "main_content": forms.Textarea(
+                attrs={
+                    "class": "form-control",
+                    "placeholder": "Main content",
+                    "rows": 7,
+                    "cols": 30,
+                    "required": True,
+                }
+            ),
+        }
