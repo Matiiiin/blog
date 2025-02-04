@@ -30,6 +30,7 @@ from django.conf import settings
 from account.utils import make_random_string
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render
+from django.conf import settings
 
 # Create your views here.
 logger = logging.getLogger(__name__)
@@ -268,5 +269,17 @@ class ContactUsCreateView(CreateView):
     """
     model = ContactUs
     form_class = ContactUsForm
-    template_name = "account/contact-us.html"
+    template_name = "account/contact_us.html"
     success_url = '/'
+
+class AboutUsTemplateView(TemplateView):
+    """
+    Shows the about us page
+    """
+    template_name = "account/about_us.html"
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        images = ['about_us/hero_1.jpg' , 'about_us/hero_2.jpg' , 'about_us/hero_5.jpg' , 'about_us/img_7_sq.jpg']
+        context['images'] = [settings.MEDIA_URL + image for image in images]
+        context['team'] = User.objects.get(email='matinnjt2000@gmail.com').profile
+        return context

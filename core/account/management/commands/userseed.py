@@ -55,6 +55,15 @@ class Command(BaseCommand):
                     "is_staff": False,
                     "is_active": True,
                     "is_verified": True,
+                },
+                {
+                    "username": "matin",
+                    "email": "matinnjt2000@gmail.com",
+                    "password": "asd",
+                    "is_superuser": False,
+                    "is_staff": True,
+                    "is_active": True,
+                    "is_verified": True,
                 }
             ]
 
@@ -80,6 +89,13 @@ class Command(BaseCommand):
                     "bio": "I am an experienced project manager and team leader. I have a strong background in agile methodologies and project planning. I excel at coordinating cross-functional teams and ensuring project success. Outside of work, I enjoy mentoring young professionals.",
                     "image": "account/profile/janesmith.jpg",
                 },
+                {
+                    "user_id": 4,
+                    "first_name": "Matin",
+                    "last_name": "Nejatbakhsh",
+                    "bio":"I am a Back-end web developer with a passion for building beautiful and functional websites. I have experience working with a variety of technologies, including HTML, CSS, Python, and Django. I am always looking for new challenges and opportunities to expand my skills.",
+                    "image": "account/profile/matin.jpg",
+                }
             ]
             for account in accounts:
                 user = User.objects.create(**account)
