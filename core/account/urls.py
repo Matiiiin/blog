@@ -35,5 +35,7 @@ urlpatterns = [
         views.UserDashboardTemplateView.as_view(),
         name="user-dashboard",
     ),
+    path('contact-us/', views.ContactUsCreateView.as_view(), name='contact-us'),
+    # path('about-us/', views.AboutUsTemplateView.as_view(), name='about-us'),
     path("api/v1/", include("account.api.v1.urls")),
 ]

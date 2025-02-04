@@ -4,13 +4,14 @@ from django.views.generic import (
     CreateView,
     View,
 )
-from account.models import User
+from account.models import User , ContactUs
 from .forms import (
     LoginForm,
     UserRegistrationForm,
     EmailVerificationResendForm,
     ForgotPasswordForm,
     ForgotPasswordConfirmForm,
+    ContactUsForm
 )
 from django.urls import reverse_lazy
 from django.contrib.auth import authenticate, login, logout
@@ -259,3 +260,13 @@ class UserDashboardTemplateView(LoginRequiredMixin, TemplateView):
         context = super().get_context_data(**kwargs)
         context["profile"] = self.request.user.profile
         return context
+
+
+class ContactUsCreateView(CreateView):
+    """
+    Shows the contact us form
+    """
+    model = ContactUs
+    form_class = ContactUsForm
+    template_name = "account/contact-us.html"
+    success_url = '/'
