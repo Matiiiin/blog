@@ -1,5 +1,5 @@
 from django import forms
-from account.models import User
+from account.models import User , ContactUs
 from django.shortcuts import get_object_or_404
 import jwt
 from django.conf import settings
@@ -206,3 +206,40 @@ class ForgotPasswordConfirmForm(forms.Form):
             raise forms.ValidationError("Token has expired")
         except Exception as e:
             raise forms.ValidationError(e)
+
+class ContactUsForm(forms.ModelForm):
+    class Meta:
+        model = ContactUs
+        fields = "__all__"
+        widgets = {
+            "name": forms.TextInput(
+                attrs={
+                    "class": "form-control",
+                    "placeholder": "Your name",
+                    "required": True,
+                }
+            ),
+            "email": forms.EmailInput(
+                attrs={
+                    "class": "form-control",
+                    "placeholder": "Your email",
+                    "required": True,
+                }
+            ),
+            "subject": forms.TextInput(
+                attrs={
+                    "class": "form-control",
+                    "placeholder": "Subject",
+                    "required": True,
+                }
+            ),
+            "message": forms.Textarea(
+                attrs={
+                    "class": "form-control",
+                    "placeholder": "Message",
+                    "rows": 7,
+                    "cols": 30,
+                    "required": True,
+                }
+            ),
+        }

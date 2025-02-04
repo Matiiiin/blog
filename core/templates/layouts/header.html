@@ -68,37 +68,16 @@
             <div class="col-6 text-center">
               <ul class="js-clone-nav d-none d-lg-inline-block text-start site-menu mx-auto">
                 <li class="active"><a href="{% url 'homepage' %}">Home</a></li>
-                <li class="has-children">
-                  <a href="category.html">Pages</a>
-                  <ul class="dropdown">
-                    <li><a href="search-result.html">Search Result</a></li>
-                    <li><a href="blog.html">Blog</a></li>
-                    <li><a href="single.html">Blog Single</a></li>
-                    <li><a href="category.html">Category</a></li>
-                    <li><a href="about.html">About</a></li>
-                    <li><a href="contact.html">Contact Us</a></li>
-                    <li><a href="#">Menu One</a></li>
-                    <li><a href="#">Menu Two</a></li>
-                    <li class="has-children">
-                      <a href="#">Dropdown</a>
-                      <ul class="dropdown">
-                        <li><a href="#">Sub Menu One</a></li>
-                        <li><a href="#">Sub Menu Two</a></li>
-                        <li><a href="#">Sub Menu Three</a></li>
-                      </ul>
-                    </li>
-                  </ul>
-                </li>
-                <li><a href="category.html">Culture</a></li>
-                <li><a href="category.html">Business</a></li>
-                <li><a href="category.html">Politics</a></li>
+                <li><a href="{% url 'blog:post-list' %}">Blog</a></li>
+                <li><a href="{% url 'account:contact-us' %}">Contact Us</a></li>
+{#                <li><a href="{% url 'blog:about-us' %}">About us</a></li>#}
               </ul>
             </div>
 
             <!-- Search Form (Vertically Centered) -->
             <div class="col-2" style="display: flex; align-items: center; justify-content: center;">
               <form class="header-search-form" action="{% url 'blog:post-search' %}" method="get">
-                <input type="text" name="search" class="form-control" placeholder="Search and hit enter...">
+                <input type="text" name="search" class="form-control text-center" placeholder="Search and hit enter...">
               </form>
             </div>
 
