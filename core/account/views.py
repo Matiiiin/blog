@@ -3,7 +3,8 @@ from django.views.generic import (
     FormView,
     CreateView,
     View,
-    ListView
+    ListView,
+    UpdateView
 )
 from account.models import User , ContactUs
 from blog.models import Comment , CommentReply , Post , Image
@@ -14,7 +15,8 @@ from .forms import (
     ForgotPasswordForm,
     ForgotPasswordConfirmForm,
     ContactUsForm,
-    UserPostCreateForm
+    UserPostUpdateForm,
+    UserPostCreateForm,
 )
 from django.urls import reverse_lazy
 from django.contrib.auth import authenticate, login, logout
@@ -316,12 +318,46 @@ class UserPostCreateView(LoginRequiredMixin , CreateView):
                 main_content=data.get('main_content')
             )
             post.save()
-            for image in files.getlist('images'):
-                created_image = Image(
-                    image=image
-                )
-                created_image.save()
-                post.images.add(created_image)
+            if files.get('images') is not None:
+                for image in files.getlist('images'):
+                    created_image = Image(
+                        image=image
+                    )
+                    created_image.save()
+                    post.images.add(created_image)
+            return HttpResponseRedirect(self.success_url)
+        except Exception as e:
+            logger.error(f"Exception in UserPostCreateView, details:{e}")
+            return HttpResponseBadRequest("Sorry there was and error , please try again")
+
+class UserPostUpdateView(LoginRequiredMixin , UpdateView):
+    template_name = 'account/dashboard/user_post_update.html'
+    form_class = UserPostUpdateForm
+    model = Post
+    success_url = reverse_lazy('account:user-posts')
+    slug_field = 'slug'
+    context_object_name = 'post'
+
+    def post(self, request, *args, **kwargs):
+        try:
+            post = self.get_object()
+            data = request.POST
+            files = request.FILES
+            post.category_id = data.get('category')
+            post.title = data.get('title')
+            if files.get('hero_image'):
+                post.hero_image = files.get('hero_image')
+            post.short_content = data.get('short_content')
+            post.main_content = data.get('main_content')
+            post.save()
+            if files.getlist('images'):
+                post.images.clear()
+                for image in files.getlist('images'):
+                    created_image = Image(
+                        image=image
+                    )
+                    created_image.save()
+                    post.images.add(created_image)
             return HttpResponseRedirect(self.success_url)
         except Exception as e:
             logger.error(f"Exception in UserPostCreateView, details:{e}")

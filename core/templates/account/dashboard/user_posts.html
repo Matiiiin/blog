@@ -9,16 +9,23 @@
 
             <!-- Main Content -->
             <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 mt-4">
-                <h1 class="h2">My Posts
-                    <a href="{% url 'account:user-post-create' %}" class="btn btn-primary">Create Post</a></h1>
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h1 class="h2">My Posts</h1>
+                    <a href="{% url 'account:user-post-create' %}" class="btn btn-primary">Create Post</a>
+                </div>
                 {% if posts %}
                     <div class="list-group">
                         {% for post in posts %}
-                            <a href="#" class="list-group-item list-group-item-action">
-                                <h5 class="mb-1">{{ post.title }}</h5>
-                                <p class="mb-1">{{ post.content|truncatewords:20 }}</p>
-                                <small class="text-muted">Published on {{ post.created_at }}</small>
-                            </a>
+                            <div class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                                <div>
+                                    <a href="{% url "blog:post-detail" slug=post.slug %}">
+                                        <h5 class="mb-1">{{ post.title }}</h5>
+                                    </a>
+                                    <small class="text-muted">Published on {{ post.created_at }}</small>
+                                </div>
+                                <a href="{% url 'account:user-post-update' slug=post.slug %}"
+                                   class="btn btn-primary btn-sm">Edit</a>
+                            </div>
                         {% endfor %}
                     </div>
                     <div class="row text-start pt-5 border-top">
