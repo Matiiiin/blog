@@ -3,8 +3,10 @@ from django.views.generic import (
     FormView,
     CreateView,
     View,
+    ListView
 )
 from account.models import User , ContactUs
+from blog.models import Comment , CommentReply
 from .forms import (
     LoginForm,
     UserRegistrationForm,
@@ -255,11 +257,14 @@ class UserDashboardTemplateView(LoginRequiredMixin, TemplateView):
     Shows the user dashboard
     """
 
-    template_name = "account/user_dashboard.html"
+    template_name = "account/dashboard/index.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["profile"] = self.request.user.profile
+        profile = self.request.user.profile
+        context["profile"] = profile
+        context["latest_comments"] = profile.comments.order_by('-created_at')[:5]
+        context["latest_replies"] = profile.replies.order_by('-created_at')[:5]
         return context
 
 
@@ -270,7 +275,8 @@ class ContactUsCreateView(CreateView):
     model = ContactUs
     form_class = ContactUsForm
     template_name = "account/contact_us.html"
-    success_url = '/'
+    success_url = reverse_lazy('homepage')
+
 
 class AboutUsTemplateView(TemplateView):
     """
@@ -283,3 +289,11 @@ class AboutUsTemplateView(TemplateView):
         context['images'] = [settings.MEDIA_URL + image for image in images]
         context['team'] = User.objects.get(email='matinnjt2000@gmail.com').profile
         return context
+
+
+class UserPostListViewView(ListView):
+    template_name = 'account/dashboard/user_posts.html'
+    paginate_by = 7
+    context_object_name = 'posts'
+    def get_queryset(self):
+        return self.request.user.profile.posts.order_by('-created_at').all()
