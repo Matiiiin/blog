@@ -38,5 +38,7 @@ urlpatterns = [
     path('contact-us/', views.ContactUsCreateView.as_view(), name='contact-us'),
     path('about-us/', views.AboutUsTemplateView.as_view(), name='about-us'),
     path('user-post/list/' , views.UserPostListViewView.as_view(), name='user-posts'),
-     path("api/v1/", include("account.api.v1.urls")),
+    path('user-post/create/', views.UserPostCreateView.as_view(), name='user-post-create'),
+
+    path("api/v1/", include("account.api.v1.urls")),
 ]

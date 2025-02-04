@@ -1,0 +1,50 @@
+{% extends 'dashboard_main_master.html' %}
+{% block content %}
+
+    <!-- Create Post Page -->
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+               {% include './sidebar.html' %}
+
+            <!-- Main Content -->
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 mt-4">
+                <h1 class="h2">Create a New Post</h1>
+                <form method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+
+                    <div class="mb-3">
+                        {{ form.title }}
+                    </div>
+
+                    <div class="mb-3">
+                        {{ form.category }}
+                    </div>
+
+                    <div class="mb-3">
+                        {{ form.hero_image }}
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="images" class="form-label">Additional Images</label>
+                        <input type="file" class="form-control" id="images" name="images" accept="image/*" multiple>
+                        <small class="text-muted">Please upload 3 images.</small>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="short_content" class="form-label">Short Content</label>
+                        <textarea class="form-control" id="short_content" name="short_content" rows="2" required></textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="main_content" class="form-label">Main Content</label>
+                        <textarea class="form-control" id="main_content" name="main_content" rows="6" required></textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Publish Post</button>
+                </form>
+            </main>
+        </div>
+    </div>
+
+{% endblock %}

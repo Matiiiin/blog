@@ -6,14 +6,15 @@ from django.views.generic import (
     ListView
 )
 from account.models import User , ContactUs
-from blog.models import Comment , CommentReply
+from blog.models import Comment , CommentReply , Post , Image
 from .forms import (
     LoginForm,
     UserRegistrationForm,
     EmailVerificationResendForm,
     ForgotPasswordForm,
     ForgotPasswordConfirmForm,
-    ContactUsForm
+    ContactUsForm,
+    UserPostCreateForm
 )
 from django.urls import reverse_lazy
 from django.contrib.auth import authenticate, login, logout
@@ -291,9 +292,37 @@ class AboutUsTemplateView(TemplateView):
         return context
 
 
-class UserPostListViewView(ListView):
+class UserPostListViewView(LoginRequiredMixin , ListView):
     template_name = 'account/dashboard/user_posts.html'
     paginate_by = 7
     context_object_name = 'posts'
     def get_queryset(self):
         return self.request.user.profile.posts.order_by('-created_at').all()
+
+class UserPostCreateView(LoginRequiredMixin , CreateView):
+    template_name = 'account/dashboard/user_post_create.html'
+    form_class = UserPostCreateForm
+    success_url = reverse_lazy('account:user-posts')
+    def post(self, request, *args, **kwargs):
+        try:
+            data = request.POST
+            files = request.FILES
+            post = Post (
+                author=self.request.user.profile,
+                category_id=data.get('category'),
+                title=data.get('title'),
+                hero_image=files.get('hero_image'),
+                short_content=data.get('short_content'),
+                main_content=data.get('main_content')
+            )
+            post.save()
+            for image in files.getlist('images'):
+                created_image = Image(
+                    image=image
+                )
+                created_image.save()
+                post.images.add(created_image)
+            return HttpResponseRedirect(self.success_url)
+        except Exception as e:
+            logger.error(f"Exception in UserPostCreateView, details:{e}")
+            return HttpResponseBadRequest("Sorry there was and error , please try again")
