@@ -4,7 +4,8 @@ from django.views.generic import (
     CreateView,
     View,
     ListView,
-    UpdateView
+    UpdateView,
+    DeleteView
 )
 from account.models import User , ContactUs
 from blog.models import Comment , CommentReply , Post , Image
@@ -336,7 +337,16 @@ class UserPostUpdateView(LoginRequiredMixin , UpdateView):
                 created_image.save()
                 post.images.add(created_image)
         return HttpResponseRedirect(self.success_url)
-
+class UserPostDeleteView(LoginRequiredMixin , DeleteView):
+    model = Post
+    success_url = reverse_lazy('account:user-posts')
+    slug_field = 'slug'
+    context_object_name = 'post'
+    template_name = 'account/dashboard/user_post_delete.html'
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['cancel_url'] = reverse_lazy('account:user-posts')
+        return context
 class UserProfileUpdateView(FormView):
     template_name = 'account/dashboard/user_settings.html'
     form_class = UserProfileUpdateForm
