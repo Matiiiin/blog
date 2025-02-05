@@ -40,6 +40,7 @@ urlpatterns = [
     path('user-post/list/' , views.UserPostListViewView.as_view(), name='user-posts'),
     path('user-post/create/', views.UserPostCreateView.as_view(), name='user-post-create'),
     path('user-post/update/<slug:slug>', views.UserPostUpdateView.as_view(), name='user-post-update'),
+    path('user-profile/update/', views.UserProfileUpdateView.as_view(), name='user-profile-update'),
 
 
     path("api/v1/", include("account.api.v1.urls")),
