@@ -23,8 +23,12 @@
                                     </a>
                                     <small class="text-muted">Published on {{ post.created_at }}</small>
                                 </div>
-                                <a href="{% url 'account:user-post-update' slug=post.slug %}"
-                                   class="btn btn-primary btn-sm">Edit</a>
+                                <div class="d-flex">
+                                    <a href="{% url 'account:user-post-update' slug=post.slug %}"
+                                       class="btn btn-primary btn-sm">Edit</a>
+                                    <a href="{% url 'account:user-post-delete' slug=post.slug %}"
+                                       class="btn btn-danger btn-sm ms-2">Delete</a>
+                                </div>
                             </div>
                         {% endfor %}
                     </div>
