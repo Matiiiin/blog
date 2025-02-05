@@ -37,7 +37,7 @@ urlpatterns = [
     ),
     path('contact-us/', views.ContactUsCreateView.as_view(), name='contact-us'),
     path('about-us/', views.AboutUsTemplateView.as_view(), name='about-us'),
-    path('user-post/list/' , views.UserPostListViewView.as_view(), name='user-posts'),
+    path('user-post/list/' , views.UserPostListView.as_view(), name='user-posts'),
     path('user-post/create/', views.UserPostCreateView.as_view(), name='user-post-create'),
     path('user-post/update/<slug:slug>', views.UserPostUpdateView.as_view(), name='user-post-update'),
     path('user-post/delete/<slug:slug>', views.UserPostDeleteView.as_view(), name='user-post-delete'),

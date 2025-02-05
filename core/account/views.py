@@ -296,7 +296,7 @@ class AboutUsTemplateView(TemplateView):
         return context
 
 
-class UserPostListViewView(LoginRequiredMixin , ListView):
+class UserPostListView(LoginRequiredMixin , ListView):
     template_name = 'account/dashboard/user_posts.html'
     paginate_by = 7
     context_object_name = 'posts'
