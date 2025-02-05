@@ -6,24 +6,24 @@
             <div class="col-sm-6">
                 <h2 class="posts-entry-title">Fashion</h2>
             </div>
-            <div class="col-sm-6 text-sm-end"><a href="category.html" class="read-more">View All</a></div>
+            <div class="col-sm-6 text-sm-end"><a href="{% url 'blog:category-result' category_name='Fashion' %}" class="read-more">View All</a></div>
         </div>
 
         <div class="row">
             {% for post in posts %}
             <div class="col-lg-4 mb-4">
                 <div class="post-entry-alt">
-                    <a href="single.html" class="img-link"><img src="{{ post.hero_image.url }}" alt="Image" class="img-fluid"></a>
+                    <a href="{% url 'blog:post-detail' slug=post.slug %}" class="img-link"><img src="{{ post.hero_image.url }}" alt="Image" class="img-fluid"></a>
                     <div class="excerpt">
-                        <h2><a href="single.html">{{ post.title | title }}</a></h2>
+                        <h2><a href="{% url 'blog:post-detail' slug=post.slug %}">{{ post.title | title }}</a></h2>
                         <div class="post-meta align-items-center text-left clearfix">
                             <figure class="author-figure mb-0 me-3 float-start"><img src="{{ post.author.image.url}}" alt="Image" class="img-author_img-fluid"></figure>
-                            <span class="d-inline-block mt-1">By <a href="#">{{ post.author.first_name}} {{ post.author.last_name}}</a></span>
+                            <span class="d-inline-block mt-1">By <strong>{{ post.author.first_name}} {{ post.author.last_name}}</strong></span>
                             <span>&nbsp;-&nbsp; {{ post.created_at | date }}</span>
                         </div>
 
                         <p class="short_content_fashion">{{ post.short_content }}</p>
-                        <p><a href="#" class="read-more">Continue Reading</a></p>
+                        <p><a href="{% url 'blog:post-detail' slug=post.slug %}" class="read-more">Continue Reading</a></p>
                     </div>
                 </div>
             </div>
