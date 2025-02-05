@@ -17,6 +17,7 @@ from .forms import (
     ContactUsForm,
     UserPostUpdateForm,
     UserPostCreateForm,
+    UserProfileUpdateForm
 )
 from django.urls import reverse_lazy
 from django.contrib.auth import authenticate, login, logout
@@ -305,31 +306,17 @@ class UserPostCreateView(LoginRequiredMixin , CreateView):
     template_name = 'account/dashboard/user_post_create.html'
     form_class = UserPostCreateForm
     success_url = reverse_lazy('account:user-posts')
-    def post(self, request, *args, **kwargs):
-        try:
-            data = request.POST
-            files = request.FILES
-            post = Post (
-                author=self.request.user.profile,
-                category_id=data.get('category'),
-                title=data.get('title'),
-                hero_image=files.get('hero_image'),
-                short_content=data.get('short_content'),
-                main_content=data.get('main_content')
-            )
-            post.save()
-            if files.get('images') is not None:
-                for image in files.getlist('images'):
-                    created_image = Image(
-                        image=image
-                    )
-                    created_image.save()
-                    post.images.add(created_image)
-            return HttpResponseRedirect(self.success_url)
-        except Exception as e:
-            logger.error(f"Exception in UserPostCreateView, details:{e}")
-            return HttpResponseBadRequest("Sorry there was and error , please try again")
 
+    def form_valid(self, form):
+        post = form.save(commit=False)
+        post.author = self.request.user.profile
+        post.save()
+        images = self.request.FILES.getlist('images')
+        for image in images:
+            created_image = Image(image=image)
+            created_image.save()
+            post.images.add(created_image)
+        return HttpResponseRedirect(self.success_url)
 class UserPostUpdateView(LoginRequiredMixin , UpdateView):
     template_name = 'account/dashboard/user_post_update.html'
     form_class = UserPostUpdateForm
@@ -338,27 +325,42 @@ class UserPostUpdateView(LoginRequiredMixin , UpdateView):
     slug_field = 'slug'
     context_object_name = 'post'
 
-    def post(self, request, *args, **kwargs):
-        try:
-            post = self.get_object()
-            data = request.POST
-            files = request.FILES
-            post.category_id = data.get('category')
-            post.title = data.get('title')
-            if files.get('hero_image'):
-                post.hero_image = files.get('hero_image')
-            post.short_content = data.get('short_content')
-            post.main_content = data.get('main_content')
-            post.save()
-            if files.getlist('images'):
-                post.images.clear()
-                for image in files.getlist('images'):
-                    created_image = Image(
-                        image=image
-                    )
-                    created_image.save()
-                    post.images.add(created_image)
-            return HttpResponseRedirect(self.success_url)
-        except Exception as e:
-            logger.error(f"Exception in UserPostCreateView, details:{e}")
-            return HttpResponseBadRequest("Sorry there was and error , please try again")
+    def form_valid(self, form):
+        post = form.save(commit=False)
+        post.save()
+        images = self.request.FILES.getlist('images')
+        if images:
+            post.images.clear()
+            for image in images:
+                created_image = Image(image=image)
+                created_image.save()
+                post.images.add(created_image)
+        return HttpResponseRedirect(self.success_url)
+
+class UserProfileUpdateView(FormView):
+    template_name = 'account/dashboard/user_settings.html'
+    form_class = UserProfileUpdateForm
+    success_url = reverse_lazy('account:user-dashboard')
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
+    def form_valid(self, form):
+        user = self.request.user
+        user_fields = ['email' , 'username']
+        for field in user_fields:
+            if form.cleaned_data.get(field):
+                setattr(user , field , form.cleaned_data.get(field))
+        if form.cleaned_data.get('password'):
+            user.set_password(form.cleaned_data.get('password'))
+        user.save()
+        profile_fields = ['first_name' , 'last_name' , 'bio' , 'image']
+        for field in profile_fields:
+            if form.cleaned_data.get(field):
+                setattr(user.profile , field , form.cleaned_data.get(field))
+        if form.cleaned_data.get('image') is not None:
+            user.profile.image = form.cleaned_data.get('image', user.profile.image)
+        user.profile.save()
+        return super().form_valid(form)
+

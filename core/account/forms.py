@@ -303,8 +303,14 @@ class UserPostCreateForm(forms.ModelForm):
                 }
             ),
         }
+    def clean(self):
+        cleaned_data = super().clean()
+        images = cleaned_data.get("images")
+        if len(images) is not 3:
+            self.add_error('images', 'Please upload 3 images')
+        return cleaned_data
 class UserPostUpdateForm(forms.ModelForm):
-    images = MultipleFileField()
+    images = MultipleFileField(required=True)
     class Meta:
         model = Post
         fields = ["category" , "title" , "hero_image" , "images" , "short_content" , "main_content" ]
@@ -325,6 +331,7 @@ class UserPostUpdateForm(forms.ModelForm):
             "hero_image": forms.FileInput(
                 attrs={
                     "class": "form-control",
+                    "required": True,
                 }
             ),
             "short_content": forms.Textarea(
@@ -346,3 +353,100 @@ class UserPostUpdateForm(forms.ModelForm):
                 }
             ),
         }
+    def clean(self):
+        cleaned_data = super().clean()
+        images = cleaned_data.get("images")
+        title = cleaned_data.get("title")
+        if Post.objects.filter(title=title).exclude(pk=self.instance.pk).exists():
+            self.add_error('title', 'There is a post with this title')
+        if len(images) != 3:
+            self.add_error('images', 'Please upload 3 images')
+        return cleaned_data
+
+class UserProfileUpdateForm(forms.Form):
+    username = forms.CharField(
+        required=False,
+        max_length=255,
+        label="Username",
+        widget=forms.TextInput(
+            attrs={
+                "class": "form-control",
+                "placeholder": "Enter new username",
+            }
+        )
+    )
+    email = forms.EmailField(
+        required=False,
+        label="Email",
+        widget=forms.EmailInput(
+            attrs={
+                "class": "form-control",
+                "placeholder": "Enter new email",
+            }
+        )
+    )
+    first_name = forms.CharField(
+        required=False,
+        label="First name",
+        max_length=255,
+        widget=forms.TextInput(
+            attrs={
+                "class": "form-control",
+                "placeholder": "Enter new first name",
+            }
+        )
+    )
+    last_name = forms.CharField(
+        required=False,
+        label="Last name",
+        max_length=255,
+        widget=forms.TextInput(
+            attrs={
+                "class": "form-control",
+                "placeholder": "Enter new last name",
+            }
+        )
+    )
+    bio = forms.CharField(
+        required=False,
+        label="Bio",
+        widget=forms.Textarea(
+            attrs={
+                "class": "form-control",
+                "placeholder": "Enter new bio",
+                "rows": 7,
+                "cols": 30,
+            }
+        )
+    )
+    image = forms.ImageField(
+        required=False,
+        label="Image",
+        widget=forms.FileInput(
+            attrs={
+                "class": "form-control",
+            }
+        )
+    )
+    password = forms.CharField(
+        required=False,
+        label="Password",
+        widget=forms.PasswordInput(
+            attrs={
+                "class": "form-control",
+                "placeholder": "Enter new password",
+            }
+        )
+    )
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user', None)  # Handle cases where user might not exist
+        super().__init__(*args, **kwargs)
+    def clean(self):
+        data = super().clean()
+        username = data.get('username')
+        email = data.get('email')
+        if username != self.user.username and User.objects.filter(username=username).exists():
+            self.add_error('username', 'There is a user with this username')
+        if User.objects.filter(email=email).exists():
+            self.add_error('email', 'There is a user with this email')
+        return data

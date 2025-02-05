@@ -1,0 +1,64 @@
+{% extends 'dashboard_main_master.html' %}
+{% block content %}
+
+    <!-- User Settings Page -->
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            {% include './sidebar.html' %}
+            <!-- Main Content -->
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 mt-4">
+                <h1 class="h2">User Settings</h1>
+                <form method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="{{ form.username.id_for_label }}"
+                               class="form-label">{{ form.username.label }}</label>
+                        {{ form.username.errors }}
+                        {{ form.username }}
+                   </div>
+
+                    <div class="mb-3">
+                        <label for="{{ form.email.id_for_label }}" class="form-label">{{ form.email.label }}</label>
+                        {{ form.email.errors }}
+                        {{ form.email }}
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="{{ form.first_name.id_for_label }}" class="form-label">{{ form.first_name.label }}</label>
+                        {{ form.first_name.errors }}
+                        {{ form.first_name }}
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="{{ form.last_name.id_for_label }}" class="form-label">{{ form.last_name.label }}</label>
+                        {{ form.last_name.errors }}
+                        {{ form.last_name }}
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="{{ form.bio.id_for_label }}" class="form-label">{{ form.bio.label }}</label>
+                        {{ form.bio.errors }}
+                        {{ form.bio }}
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="{{ form.password.id_for_label }}" class="form-label">{{ form.password.label }}</label>
+                        {{ form.password.errors }}
+                        {{ form.password }}
+                    </div>
+                    <div class="mb-3">
+                        <label for="{{ form.image.id_for_label }}" class="form-label">{{ form.image.label }}</label>
+                        {{ form.image.errors }}
+                        {{ form.image }}
+                        <small class="text-muted">Current Image: <img src="{{ user.profile.image.url }}"
+                                                                      alt="Profile Image" width="50"></small>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </form>
+            </main>
+        </div>
+    </div>
+
+{% endblock %}

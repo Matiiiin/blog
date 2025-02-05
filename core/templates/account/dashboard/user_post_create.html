@@ -5,45 +5,49 @@
     <div class="container-fluid">
         <div class="row">
             <!-- Sidebar -->
-               {% include './sidebar.html' %}
+            {% include './sidebar.html' %}
 
             <!-- Main Content -->
             <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 mt-4">
                 <h1 class="h2">Create a New Post</h1>
-                <form method="POST" enctype="multipart/form-data">
+                <form method="post" enctype="multipart/form-data">
                     {% csrf_token %}
 
                     <div class="mb-3">
-                                                <label for="title" class="form-label">Title</label>
-
+                        <label for="title" class="form-label">Title</label>
+                        {{ form.title.errors }}
                         {{ form.title }}
                     </div>
 
                     <div class="mb-3">
-                                                <label for="category" class="form-label">Category</label>
-
+                        <label for="category" class="form-label">Category</label>
+                        {{ form.category.errors }}
                         {{ form.category }}
                     </div>
 
                     <div class="mb-3">
-                                                <label for="hero_image" class="form-label">Hero Image</label>
-
+                        <label for="hero_image" class="form-label">Hero Image</label>
+                        {{ form.hero_image.errors }}
                         {{ form.hero_image }}
                     </div>
 
                     <div class="mb-3">
                         <label for="images" class="form-label">Additional Images</label>
-                        <input type="file" class="form-control" id="images" name="images" accept="image/*" multiple required>
+                        {{ form.images.errors }}
+                        <input type="file" class="form-control" id="images" name="images" accept="image/*" multiple
+                               required>
                         <small class="text-muted">Please upload 3 images.</small>
                     </div>
 
                     <div class="mb-3">
                         <label for="short_content" class="form-label">Short Content</label>
+                        {{ form.short_content.errors }}
                         {{ form.short_content }}
                     </div>
 
                     <div class="mb-3">
                         <label for="main_content" class="form-label">Main Content</label>
+                        {{ form.main_content.errors }}
                         {{ form.main_content }}
                     </div>
 
