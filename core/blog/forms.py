@@ -6,4 +6,8 @@ from django.conf import settings
 
 
 class CommentForm(forms.Form):
-    content = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-control' , 'rows': 3}))
+    content = forms.CharField(
+        widget=forms.Textarea(
+            attrs={"class": "form-control", "rows": 3}
+        )
+    )

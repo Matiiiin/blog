@@ -1,12 +1,14 @@
 from django import forms
-from account.models import User , ContactUs
+from account.models import User, ContactUs
 from django.shortcuts import get_object_or_404
 import jwt
 from blog.models import Post
 from django.conf import settings
 
+
 class MultipleFileInput(forms.ClearableFileInput):
     allow_multiple_selected = True
+
 
 class MultipleFileField(forms.FileField):
     def __init__(self, *args, **kwargs):
@@ -20,6 +22,7 @@ class MultipleFileField(forms.FileField):
         else:
             result = [single_file_clean(data, initial)]
         return result
+
 
 class LoginForm(forms.Form):
     username = forms.CharField(
@@ -223,6 +226,7 @@ class ForgotPasswordConfirmForm(forms.Form):
         except Exception as e:
             raise forms.ValidationError(e)
 
+
 class ContactUsForm(forms.ModelForm):
     class Meta:
         model = ContactUs
@@ -259,11 +263,21 @@ class ContactUsForm(forms.ModelForm):
                 }
             ),
         }
+
+
 class UserPostCreateForm(forms.ModelForm):
     images = MultipleFileField()
+
     class Meta:
         model = Post
-        fields = ["category" , "title" , "hero_image" , "images" , "short_content" , "main_content" ]
+        fields = [
+            "category",
+            "title",
+            "hero_image",
+            "images",
+            "short_content",
+            "main_content",
+        ]
         widgets = {
             "category": forms.Select(
                 attrs={
@@ -303,17 +317,28 @@ class UserPostCreateForm(forms.ModelForm):
                 }
             ),
         }
+
     def clean(self):
         cleaned_data = super().clean()
         images = cleaned_data.get("images")
         if len(images) is not 3:
-            self.add_error('images', 'Please upload 3 images')
+            self.add_error("images", "Please upload 3 images")
         return cleaned_data
+
+
 class UserPostUpdateForm(forms.ModelForm):
     images = MultipleFileField(required=True)
+
     class Meta:
         model = Post
-        fields = ["category" , "title" , "hero_image" , "images" , "short_content" , "main_content" ]
+        fields = [
+            "category",
+            "title",
+            "hero_image",
+            "images",
+            "short_content",
+            "main_content",
+        ]
         widgets = {
             "category": forms.Select(
                 attrs={
@@ -353,15 +378,21 @@ class UserPostUpdateForm(forms.ModelForm):
                 }
             ),
         }
+
     def clean(self):
         cleaned_data = super().clean()
         images = cleaned_data.get("images")
         title = cleaned_data.get("title")
-        if Post.objects.filter(title=title).exclude(pk=self.instance.pk).exists():
-            self.add_error('title', 'There is a post with this title')
+        if (
+            Post.objects.filter(title=title)
+            .exclude(pk=self.instance.pk)
+            .exists()
+        ):
+            self.add_error("title", "There is a post with this title")
         if len(images) != 3:
-            self.add_error('images', 'Please upload 3 images')
+            self.add_error("images", "Please upload 3 images")
         return cleaned_data
+
 
 class UserProfileUpdateForm(forms.Form):
     username = forms.CharField(
@@ -373,7 +404,7 @@ class UserProfileUpdateForm(forms.Form):
                 "class": "form-control",
                 "placeholder": "Enter new username",
             }
-        )
+        ),
     )
     email = forms.EmailField(
         required=False,
@@ -383,7 +414,7 @@ class UserProfileUpdateForm(forms.Form):
                 "class": "form-control",
                 "placeholder": "Enter new email",
             }
-        )
+        ),
     )
     first_name = forms.CharField(
         required=False,
@@ -394,7 +425,7 @@ class UserProfileUpdateForm(forms.Form):
                 "class": "form-control",
                 "placeholder": "Enter new first name",
             }
-        )
+        ),
     )
     last_name = forms.CharField(
         required=False,
@@ -405,7 +436,7 @@ class UserProfileUpdateForm(forms.Form):
                 "class": "form-control",
                 "placeholder": "Enter new last name",
             }
-        )
+        ),
     )
     bio = forms.CharField(
         required=False,
@@ -417,7 +448,7 @@ class UserProfileUpdateForm(forms.Form):
                 "rows": 7,
                 "cols": 30,
             }
-        )
+        ),
     )
     image = forms.ImageField(
         required=False,
@@ -426,7 +457,7 @@ class UserProfileUpdateForm(forms.Form):
             attrs={
                 "class": "form-control",
             }
-        )
+        ),
     )
     password = forms.CharField(
         required=False,
@@ -436,17 +467,26 @@ class UserProfileUpdateForm(forms.Form):
                 "class": "form-control",
                 "placeholder": "Enter new password",
             }
-        )
+        ),
     )
+
     def __init__(self, *args, **kwargs):
-        self.user = kwargs.pop('user', None)  # Handle cases where user might not exist
+        self.user = kwargs.pop(
+            "user", None
+        )  # Handle cases where user might not exist
         super().__init__(*args, **kwargs)
+
     def clean(self):
         data = super().clean()
-        username = data.get('username')
-        email = data.get('email')
-        if username != self.user.username and User.objects.filter(username=username).exists():
-            self.add_error('username', 'There is a user with this username')
+        username = data.get("username")
+        email = data.get("email")
+        if (
+            username != self.user.username
+            and User.objects.filter(username=username).exists()
+        ):
+            self.add_error(
+                "username", "There is a user with this username"
+            )
         if User.objects.filter(email=email).exists():
-            self.add_error('email', 'There is a user with this email')
+            self.add_error("email", "There is a user with this email")
         return data
