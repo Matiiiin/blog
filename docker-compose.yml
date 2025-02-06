@@ -58,9 +58,8 @@ services:
     container_name: rabbitmq
     hostname: rabbitmq
     image: rabbitmq:4-management
-    environment:
-      - RABBITMQ_DEFAULT_USER=guest
-      - RABBITMQ_DEFAULT_PASS=guest
+    env_file:
+      - ./envs/dev/rabbitmq/.env
     ports:
       - 5672:5672
       - 15672:15672
