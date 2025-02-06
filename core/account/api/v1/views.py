@@ -20,6 +20,7 @@ from account.utils import make_random_string
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
 from rest_framework.views import APIView
+from django.contrib.sites.shortcuts import get_current_site
 
 logger = logging.getLogger(__name__)
 
@@ -53,9 +54,14 @@ class AuthGenericViewSet(viewsets.GenericViewSet):
         user.save()
         # send verification email
         token = RefreshToken.for_user(user)
+        current_site = get_current_site(request)
         email_verification_template = render_to_string(
             "account/email_verification.html",
-            {"token": token, "user": user},
+            {
+                "token": token,
+                "user": user,
+                "current_site": current_site.domain,
+            },
         )
         send_email.delay(
             subject="Welcome to our blog",
@@ -99,9 +105,14 @@ class AuthGenericViewSet(viewsets.GenericViewSet):
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data["user"]
         token = RefreshToken.for_user(user)
+        current_site = get_current_site(request)
         email_verification_template = render_to_string(
             "account/email_verification_resend.html",
-            {"token": token, "user": user},
+            {
+                "token": token,
+                "user": user,
+                "current_site": current_site.domain,
+            },
         )
         send_email.delay(
             subject="Account verification",
@@ -128,12 +139,14 @@ class AuthGenericViewSet(viewsets.GenericViewSet):
         temp_password = make_random_string()
         user.set_password(temp_password)
         user.save()
+        current_site = get_current_site(request)
         email_verification_template = render_to_string(
             "account/forgot_password.html",
             {
                 "temp_password": temp_password,
                 "user": user,
                 "token": str(token),
+                "current_site": current_site.domain,
             },
         )
         send_email.delay(

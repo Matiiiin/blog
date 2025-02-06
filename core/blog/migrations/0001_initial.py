@@ -27,7 +27,10 @@ class Migration(migrations.Migration):
                 ),
                 ("name", models.CharField(max_length=100)),
                 ("description", models.TextField()),
-                ("created_at", models.DateTimeField(auto_now_add=True)),
+                (
+                    "created_at",
+                    models.DateTimeField(auto_now_add=True),
+                ),
                 ("updated_at", models.DateTimeField(auto_now=True)),
             ],
         ),
@@ -44,7 +47,10 @@ class Migration(migrations.Migration):
                     ),
                 ),
                 ("image", models.ImageField(upload_to="images/")),
-                ("created_at", models.DateTimeField(auto_now_add=True)),
+                (
+                    "created_at",
+                    models.DateTimeField(auto_now_add=True),
+                ),
                 ("updated_at", models.DateTimeField(auto_now=True)),
             ],
         ),
@@ -61,7 +67,10 @@ class Migration(migrations.Migration):
                     ),
                 ),
                 ("name", models.CharField(max_length=100)),
-                ("created_at", models.DateTimeField(auto_now_add=True)),
+                (
+                    "created_at",
+                    models.DateTimeField(auto_now_add=True),
+                ),
                 ("updated_at", models.DateTimeField(auto_now=True)),
             ],
         ),
@@ -78,7 +87,10 @@ class Migration(migrations.Migration):
                     ),
                 ),
                 ("content", models.TextField()),
-                ("created_at", models.DateTimeField(auto_now_add=True)),
+                (
+                    "created_at",
+                    models.DateTimeField(auto_now_add=True),
+                ),
                 ("updated_at", models.DateTimeField(auto_now=True)),
                 (
                     "author",
@@ -103,7 +115,10 @@ class Migration(migrations.Migration):
                     ),
                 ),
                 ("content", models.TextField()),
-                ("created_at", models.DateTimeField(auto_now_add=True)),
+                (
+                    "created_at",
+                    models.DateTimeField(auto_now_add=True),
+                ),
                 ("updated_at", models.DateTimeField(auto_now=True)),
                 (
                     "author",
@@ -135,17 +150,29 @@ class Migration(migrations.Migration):
                         verbose_name="ID",
                     ),
                 ),
-                ("title", models.CharField(max_length=100, unique=True)),
+                (
+                    "title",
+                    models.CharField(max_length=100, unique=True),
+                ),
                 (
                     "slug",
                     models.SlugField(
-                        blank=True, max_length=100, null=True, unique=True
+                        blank=True,
+                        max_length=100,
+                        null=True,
+                        unique=True,
                     ),
                 ),
-                ("hero_image", models.ImageField(upload_to="post_images/")),
+                (
+                    "hero_image",
+                    models.ImageField(upload_to="post_images/"),
+                ),
                 ("short_content", models.TextField()),
                 ("main_content", models.TextField()),
-                ("created_at", models.DateTimeField(auto_now_add=True)),
+                (
+                    "created_at",
+                    models.DateTimeField(auto_now_add=True),
+                ),
                 ("updated_at", models.DateTimeField(auto_now=True)),
                 (
                     "author",
@@ -165,9 +192,16 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "images",
-                    models.ManyToManyField(related_name="posts", to="blog.image"),
+                    models.ManyToManyField(
+                        related_name="posts", to="blog.image"
+                    ),
                 ),
-                ("tags", models.ManyToManyField(related_name="posts", to="blog.tag")),
+                (
+                    "tags",
+                    models.ManyToManyField(
+                        related_name="posts", to="blog.tag"
+                    ),
+                ),
             ],
         ),
         migrations.AddField(

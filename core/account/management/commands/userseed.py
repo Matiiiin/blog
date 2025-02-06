@@ -6,8 +6,10 @@ from django.db import connection
 from account.models import Profile
 
 from faker import Faker
+
 fake = Faker()
 User = get_user_model()
+
 
 class Command(BaseCommand):
     help = "Creates users"
@@ -19,15 +21,19 @@ class Command(BaseCommand):
         self.flush_table(User)
         self.create_users()
 
-
-    def flush_table(self ,model):
-        self.stdout.write('Flushing data from User table...\n')
+    def flush_table(self, model):
+        self.stdout.write("Flushing data from User table...\n")
         table_name = model._meta.db_table
         with connection.cursor() as cursor:
-            cursor.execute(f'TRUNCATE TABLE {table_name} RESTART IDENTITY CASCADE')
+            cursor.execute(
+                f"TRUNCATE TABLE {table_name} RESTART IDENTITY CASCADE"
+            )
+
     def create_users(self):
         try:
-            signals.post_save.disconnect(sender=User, receiver=create_profile_for_user)
+            signals.post_save.disconnect(
+                sender=User, receiver=create_profile_for_user
+            )
             accounts = [
                 {
                     "username": "admin",
@@ -64,7 +70,7 @@ class Command(BaseCommand):
                     "is_staff": True,
                     "is_active": True,
                     "is_verified": True,
-                }
+                },
             ]
 
             account_profiles = [
@@ -93,19 +99,27 @@ class Command(BaseCommand):
                     "user_id": 4,
                     "first_name": "Matin",
                     "last_name": "Nejatbakhsh",
-                    "bio":"I am a Back-end web developer with a passion for building beautiful and functional websites. I have experience working with a variety of technologies, including HTML, CSS, Python, and Django. I am always looking for new challenges and opportunities to expand my skills.",
+                    "bio": "I am a Back-end web developer with a passion for building beautiful and functional websites. I have experience working with a variety of technologies, including HTML, CSS, Python, and Django. I am always looking for new challenges and opportunities to expand my skills.",
                     "image": "account/profile/matin.jpg",
-                }
+                },
             ]
             for account in accounts:
                 user = User.objects.create(**account)
                 user.set_password(account["password"])
                 user.save()
-                self.stdout.write(self.style.SUCCESS(f"User {user.username} created successfully"))
+                self.stdout.write(
+                    self.style.SUCCESS(
+                        f"User {user.username} created successfully"
+                    )
+                )
 
             for account_profile in account_profiles:
                 profile = Profile.objects.create(**account_profile)
-                self.stdout.write(self.style.SUCCESS(f"Profile for {profile.user} created successfully"))
+                self.stdout.write(
+                    self.style.SUCCESS(
+                        f"Profile for {profile.user} created successfully"
+                    )
+                )
 
             for i in range(15):
                 user = User.objects.create(
@@ -119,7 +133,11 @@ class Command(BaseCommand):
                 )
                 user.set_password("asd")
                 user.save()
-                self.stdout.write(self.style.SUCCESS(f"User {user.username} created successfully"))
+                self.stdout.write(
+                    self.style.SUCCESS(
+                        f"User {user.username} created successfully"
+                    )
+                )
                 profile = Profile.objects.create(
                     user=user,
                     first_name=fake.first_name(),
@@ -127,10 +145,14 @@ class Command(BaseCommand):
                     bio=fake.text(),
                     image="account/profile/default.jpg",
                 )
-                self.stdout.write(self.style.SUCCESS(f"Profile for {profile.user} created successfully"))
-            signals.post_save.connect(sender=User, receiver=create_profile_for_user)
+                self.stdout.write(
+                    self.style.SUCCESS(
+                        f"Profile for {profile.user} created successfully"
+                    )
+                )
+            signals.post_save.connect(
+                sender=User, receiver=create_profile_for_user
+            )
 
         except Exception as e:
             raise CommandError(f"Error: {e}")
-
-

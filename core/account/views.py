@@ -5,10 +5,10 @@ from django.views.generic import (
     View,
     ListView,
     UpdateView,
-    DeleteView
+    DeleteView,
 )
-from account.models import User , ContactUs
-from blog.models import Comment , CommentReply , Post , Image
+from account.models import User, ContactUs
+from blog.models import Post, Image
 from .forms import (
     LoginForm,
     UserRegistrationForm,
@@ -18,7 +18,7 @@ from .forms import (
     ContactUsForm,
     UserPostUpdateForm,
     UserPostCreateForm,
-    UserProfileUpdateForm
+    UserProfileUpdateForm,
 )
 from django.urls import reverse_lazy
 from django.contrib.auth import authenticate, login, logout
@@ -37,9 +37,11 @@ from django.conf import settings
 from account.utils import make_random_string
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render
-from django.conf import settings
 from django.views.decorators.cache import cache_page
 from django.utils.decorators import method_decorator
+from django.contrib.sites.shortcuts import get_current_site
+from django.contrib import messages
+
 
 # Create your views here.
 logger = logging.getLogger(__name__)
@@ -52,9 +54,9 @@ class HomePageTemplateView(TemplateView):
 
     template_name = "index.html"
 
-    @method_decorator(cache_page(60 * 10 , key_prefix='homepage'))
+    @method_decorator(cache_page(60 * 10, key_prefix="homepage"))
     def dispatch(self, request, *args, **kwargs):
-        return super().dispatch(request , *args, **kwargs)
+        return super().dispatch(request, *args, **kwargs)
 
 
 class RegisterCreateView(CreateView):
@@ -83,9 +85,14 @@ class RegisterCreateView(CreateView):
             login(self.request, user)
             token = RefreshToken.for_user(user)
             # send activation email
+            current_site = get_current_site(self.request)
             email_verification_template = render_to_string(
                 "account/email_verification.html",
-                {"user": user, "token": token},
+                {
+                    "user": user,
+                    "token": token,
+                    "current_site": current_site.domain,
+                },
             )
             send_email.delay(
                 subject="Welcome to our blog",
@@ -94,6 +101,11 @@ class RegisterCreateView(CreateView):
                 recipient_list=[user.email],
                 template=email_verification_template,
             )
+            messages.success(
+                self.request,
+                "Verification email has been sent , please check your email",
+            )
+
             return super().form_valid(form)
         except Exception as e:
             logger.error(f"Exception in Register, details:{e}")
@@ -146,9 +158,14 @@ class EmailVerificationResendFormView(FormView):
         try:
             user = form.cleaned_data.get("user")
             token = RefreshToken.for_user(user)
+            current_site = get_current_site(self.request)
             email_verification_template = render_to_string(
                 "account/email_verification_resend.html",
-                {"user": user, "token": token},
+                {
+                    "user": user,
+                    "token": token,
+                    "current_site": current_site.domain,
+                },
             )
             send_email.delay(
                 subject="Account verification",
@@ -220,12 +237,14 @@ class ForgotPasswordFormView(FormView):
             user.set_password(temp_password)
             user.save()
             token = RefreshToken.for_user(user)
+            current_site = get_current_site(self.request)
             email_forgot_password_template = render_to_string(
                 "account/forgot_password.html",
                 {
                     "user": user,
                     "temp_password": temp_password,
                     "token": str(token),
+                    "current_site": current_site.domain,
                 },
             )
             send_email.delay(
@@ -274,8 +293,12 @@ class UserDashboardTemplateView(LoginRequiredMixin, TemplateView):
         context = super().get_context_data(**kwargs)
         profile = self.request.user.profile
         context["profile"] = profile
-        context["latest_comments"] = profile.comments.order_by('-created_at')[:5]
-        context["latest_replies"] = profile.replies.order_by('-created_at')[:5]
+        context["latest_comments"] = profile.comments.order_by(
+            "-created_at"
+        )[:5]
+        context["latest_replies"] = profile.replies.order_by(
+            "-created_at"
+        )[:5]
         return context
 
 
@@ -283,12 +306,13 @@ class ContactUsCreateView(CreateView):
     """
     Shows the contact us form
     """
+
     model = ContactUs
     form_class = ContactUsForm
     template_name = "account/contact_us.html"
-    success_url = reverse_lazy('homepage')
+    success_url = reverse_lazy("homepage")
 
-    @method_decorator(cache_page(60 * 10, key_prefix='contact_us'))
+    @method_decorator(cache_page(60 * 10, key_prefix="contact_us"))
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
 
@@ -297,53 +321,70 @@ class AboutUsTemplateView(TemplateView):
     """
     Shows the about us page
     """
+
     template_name = "account/about_us.html"
 
-    @method_decorator(cache_page(60 * 10, key_prefix='about-us'))
+    @method_decorator(cache_page(60 * 10, key_prefix="about-us"))
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        images = ['about_us/hero_1.jpg' , 'about_us/hero_2.jpg' , 'about_us/hero_5.jpg' , 'about_us/img_7_sq.jpg']
-        context['images'] = [settings.MEDIA_URL + image for image in images]
-        context['team'] = User.objects.get(email='matinnjt2000@gmail.com').profile
+        images = [
+            "about_us/hero_1.jpg",
+            "about_us/hero_2.jpg",
+            "about_us/hero_5.jpg",
+            "about_us/img_7_sq.jpg",
+        ]
+        context["images"] = [
+            settings.MEDIA_URL + image for image in images
+        ]
+        context["team"] = User.objects.get(
+            email="matinnjt2000@gmail.com"
+        ).profile
         return context
 
 
-class UserPostListView(LoginRequiredMixin , ListView):
-    template_name = 'account/dashboard/user_posts.html'
+class UserPostListView(LoginRequiredMixin, ListView):
+    template_name = "account/dashboard/user_posts.html"
     paginate_by = 7
-    context_object_name = 'posts'
-    def get_queryset(self):
-        return self.request.user.profile.posts.order_by('-created_at').all()
+    context_object_name = "posts"
 
-class UserPostCreateView(LoginRequiredMixin , CreateView):
-    template_name = 'account/dashboard/user_post_create.html'
+    def get_queryset(self):
+        return self.request.user.profile.posts.order_by(
+            "-created_at"
+        ).all()
+
+
+class UserPostCreateView(LoginRequiredMixin, CreateView):
+    template_name = "account/dashboard/user_post_create.html"
     form_class = UserPostCreateForm
-    success_url = reverse_lazy('account:user-posts')
+    success_url = reverse_lazy("account:user-posts")
 
     def form_valid(self, form):
         post = form.save(commit=False)
         post.author = self.request.user.profile
         post.save()
-        images = self.request.FILES.getlist('images')
+        images = self.request.FILES.getlist("images")
         for image in images:
             created_image = Image(image=image)
             created_image.save()
             post.images.add(created_image)
         return HttpResponseRedirect(self.success_url)
-class UserPostUpdateView(LoginRequiredMixin , UpdateView):
-    template_name = 'account/dashboard/user_post_update.html'
+
+
+class UserPostUpdateView(LoginRequiredMixin, UpdateView):
+    template_name = "account/dashboard/user_post_update.html"
     form_class = UserPostUpdateForm
     model = Post
-    success_url = reverse_lazy('account:user-posts')
-    slug_field = 'slug'
-    context_object_name = 'post'
+    success_url = reverse_lazy("account:user-posts")
+    slug_field = "slug"
+    context_object_name = "post"
 
     def form_valid(self, form):
         post = form.save(commit=False)
         post.save()
-        images = self.request.FILES.getlist('images')
+        images = self.request.FILES.getlist("images")
         if images:
             post.images.clear()
             for image in images:
@@ -351,40 +392,49 @@ class UserPostUpdateView(LoginRequiredMixin , UpdateView):
                 created_image.save()
                 post.images.add(created_image)
         return HttpResponseRedirect(self.success_url)
-class UserPostDeleteView(LoginRequiredMixin , DeleteView):
+
+
+class UserPostDeleteView(LoginRequiredMixin, DeleteView):
     model = Post
-    success_url = reverse_lazy('account:user-posts')
-    slug_field = 'slug'
-    context_object_name = 'post'
-    template_name = 'account/dashboard/user_post_delete.html'
+    success_url = reverse_lazy("account:user-posts")
+    slug_field = "slug"
+    context_object_name = "post"
+    template_name = "account/dashboard/user_post_delete.html"
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['cancel_url'] = reverse_lazy('account:user-posts')
+        context["cancel_url"] = reverse_lazy("account:user-posts")
         return context
+
+
 class UserProfileUpdateView(FormView):
-    template_name = 'account/dashboard/user_settings.html'
+    template_name = "account/dashboard/user_settings.html"
     form_class = UserProfileUpdateForm
-    success_url = reverse_lazy('account:user-dashboard')
+    success_url = reverse_lazy("account:user-dashboard")
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
-        kwargs['user'] = self.request.user
+        kwargs["user"] = self.request.user
         return kwargs
+
     def form_valid(self, form):
         user = self.request.user
-        user_fields = ['email' , 'username']
+        user_fields = ["email", "username"]
         for field in user_fields:
             if form.cleaned_data.get(field):
-                setattr(user , field , form.cleaned_data.get(field))
-        if form.cleaned_data.get('password'):
-            user.set_password(form.cleaned_data.get('password'))
+                setattr(user, field, form.cleaned_data.get(field))
+        if form.cleaned_data.get("password"):
+            user.set_password(form.cleaned_data.get("password"))
         user.save()
-        profile_fields = ['first_name' , 'last_name' , 'bio' , 'image']
+        profile_fields = ["first_name", "last_name", "bio", "image"]
         for field in profile_fields:
             if form.cleaned_data.get(field):
-                setattr(user.profile , field , form.cleaned_data.get(field))
-        if form.cleaned_data.get('image') is not None:
-            user.profile.image = form.cleaned_data.get('image', user.profile.image)
+                setattr(
+                    user.profile, field, form.cleaned_data.get(field)
+                )
+        if form.cleaned_data.get("image") is not None:
+            user.profile.image = form.cleaned_data.get(
+                "image", user.profile.image
+            )
         user.profile.save()
         return super().form_valid(form)
-

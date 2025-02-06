@@ -8,6 +8,7 @@ import pytest
 
 User = get_user_model()
 
+
 @pytest.mark.usefixtures("user")
 @pytest.mark.usefixtures("image_file")
 class TestUserProfileUpdateView(TestCase):
@@ -22,10 +23,16 @@ class TestUserProfileUpdateView(TestCase):
 
     def test_user_profile_update_view_template_used(self):
         response = self.client.get(self.url)
-        self.assertTemplateUsed(response, "account/dashboard/user_settings.html")
+        self.assertTemplateUsed(
+            response, "account/dashboard/user_settings.html"
+        )
 
     def test_user_profile_update_view_form_valid(self):
-        image_file = SimpleUploadedFile("test_image.jpg", b"file_content", content_type="image/jpeg")
+        image_file = SimpleUploadedFile(
+            "test_image.jpg",
+            b"file_content",
+            content_type="image/jpeg",
+        )
         data = {
             "email": "newemail@example.com",
             "username": "newusername",
