@@ -321,7 +321,7 @@ class UserPostCreateForm(forms.ModelForm):
     def clean(self):
         cleaned_data = super().clean()
         images = cleaned_data.get("images")
-        if len(images) is not 3:
+        if len(images) != 3:
             self.add_error("images", "Please upload 3 images")
         return cleaned_data
 

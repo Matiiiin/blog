@@ -8,7 +8,7 @@ from django.views.generic import (
     DeleteView,
 )
 from account.models import User, ContactUs
-from blog.models import Comment, CommentReply, Post, Image
+from blog.models import Post, Image
 from .forms import (
     LoginForm,
     UserRegistrationForm,
@@ -37,7 +37,6 @@ from django.conf import settings
 from account.utils import make_random_string
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render
-from django.conf import settings
 from django.views.decorators.cache import cache_page
 from django.utils.decorators import method_decorator
 from django.contrib.sites.shortcuts import get_current_site

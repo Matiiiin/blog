@@ -1,7 +1,6 @@
 from django import template
 from blog.models import Post
 import logging
-from django.db.models import Q
 from django.utils import timezone
 from datetime import datetime, timedelta
 

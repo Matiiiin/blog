@@ -1,8 +1,4 @@
 from django import forms
-from account.models import User
-from django.shortcuts import get_object_or_404
-import jwt
-from django.conf import settings
 
 
 class CommentForm(forms.Form):

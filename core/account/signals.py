@@ -26,5 +26,7 @@ def send_email_contact_us_message_to_admin(
             subject="A new Contact Us messaege is creted",
             from_email="matinnejatbakhshdev@gmail.com",
             recipient_list=["matinnejatbakhshdev@gmail.com"],
-            message=f"<p>Name:{instance.name} <br> Email:{instance.email}<br> Subject:{instance.subject}<br> Message:{instance.message}</p>",
+            message=f"<p>Name:{instance.name} <br> Email:{instance.email}"
+            f"<br> Subject:{instance.subject}"
+            f"<br> Message:{instance.message}</p>",
         )

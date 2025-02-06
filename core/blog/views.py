@@ -1,5 +1,4 @@
-from django.shortcuts import render
-from django.views.generic import ListView, DetailView, CreateView
+from django.views.generic import ListView, DetailView
 from django.views import View
 from .models import Category, Post, CommentReply, Comment
 from django.db.models import Count

@@ -1,7 +1,6 @@
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.response import Response
-from rest_framework.decorators import action
 from rest_framework import status
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter, OrderingFilter
@@ -16,11 +15,9 @@ from .serializers import (
 from rest_framework.generics import (
     ListCreateAPIView,
     RetrieveUpdateDestroyAPIView,
-    GenericAPIView,
 )
 from .permissions import IsVerifiedUser, IsOwner
 from .paginations import PostPagination
-from rest_framework.mixins import ListModelMixin, CreateModelMixin
 import logging
 
 logger = logging.getLogger(__name__)
@@ -38,7 +35,8 @@ logger = logging.getLogger(__name__)
 
 class PostListCreateAPIView(ListCreateAPIView):
     """
-    A class for creating and listing posts, utilizing features like search, ordering and filtering.
+    A class for creating and listing posts,
+     utilizing features like search, ordering and filtering.
     """
 
     serializer_class = PostModelSerializer
