@@ -1,11 +1,20 @@
 {% extends 'dashboard_main_master.html' %}
 {% block content %}
-
+{% if messages %}
+        <div class="container mt-4">
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
     <!-- Sidebar & Main Content -->
     <div class="container-fluid">
         <div class="row">
             <!-- Sidebar -->
-               {% include './sidebar.html' %}
+            {% include './sidebar.html' %}
             <!-- Main Content -->
             <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 mt-4">
                 <h1 class="h2">Welcome {{ profile.first_name | title }} {{ profile.last_name | title }}!</h1>
@@ -13,7 +22,8 @@
                 <!-- User Overview -->
                 <div class="card mb-4">
                     <div class="card-body d-flex align-items-center">
-                        <img src="{{ profile.image.url }}" alt="Profile Image" class="rounded-circle" width="80" height="80">
+                        <img src="{{ profile.image.url }}" alt="Profile Image" class="rounded-circle" width="80"
+                             height="80">
                         <div class="ms-3">
                             <h5 class="card-title"><strong>{{ user.username }}</strong></h5>
                             <p class="mb-1"><strong>Last Login:</strong> {{ user.last_login }}</p>
@@ -29,7 +39,9 @@
                         <h5 class="card-title">Latest Comments</h5>
                         <ul>
                             {% for comment in latest_comments %}
-                                <li><a href={% url 'blog:post-detail' slug=comment.post.slug %}>{{ comment.content }}</a> - <small>{{ comment.created_at }}</small></li>
+                                <li>
+                                    <a href={% url 'blog:post-detail' slug=comment.post.slug %}>{{ comment.content }}</a>
+                                    - <small>{{ comment.created_at }}</small></li>
                             {% empty %}
                                 <li>You haven't commented yet.</li>
                             {% endfor %}
@@ -41,7 +53,9 @@
                         <h5 class="card-title">Latest Replies</h5>
                         <ul>
                             {% for commentreply in latest_replies %}
-                                <li><a href={% url 'blog:post-detail' slug=commentreply.comment.post.slug %}>{{ commentreply.content }}</a> - <small>{{ commentreply.created_at }}</small></li>
+                                <li>
+                                    <a href={% url 'blog:post-detail' slug=commentreply.comment.post.slug %}>{{ commentreply.content }}</a>
+                                    - <small>{{ commentreply.created_at }}</small></li>
                             {% empty %}
                                 <li>You haven't replied yet.</li>
                             {% endfor %}

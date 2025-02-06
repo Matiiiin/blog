@@ -2,7 +2,7 @@ from django.test import TestCase, Client
 from django.urls import reverse
 from django.contrib.auth import get_user_model
 from account.forms import UserRegistrationForm
-from blog.models import Post , Category
+from blog.models import Post, Category
 
 
 User = get_user_model()
@@ -148,16 +148,21 @@ class TestLogoutView(TestCase):
             username="testuser", password="testpassword"
         )
         response = self.client.get(self.url)
-        posts_categories = ['Technology' , 'Culture' , 'Travel' , 'Fashion']
+        posts_categories = [
+            "Technology",
+            "Culture",
+            "Travel",
+            "Fashion",
+        ]
         for category in posts_categories:
-            cat= Category.objects.create(name=category)
+            cat = Category.objects.create(name=category)
             for i in range(20):
                 post = Post.objects.create(
                     title=f"Post{category}_{i}",
                     short_content=f"Content{category}_{i}",
                     hero_image="default.jpg",
                     category=cat,
-                    author=self.user.profile
+                    author=self.user.profile,
                 )
                 post.save()
         self.assertRedirects(response, reverse("homepage"))
