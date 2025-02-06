@@ -27,7 +27,7 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = bool(int(os.getenv("DEBUG")))
 
-ALLOWED_HOSTS = ["localhost" , "127.0.0.1" ]
+ALLOWED_HOSTS = ["localhost" , "127.0.0.1" ,"194.5.193.193"]
 
 
 # Application definition
@@ -175,7 +175,7 @@ EMAIL_USE_SSL = bool(int(os.getenv("EMAIL_USE_SSL")))
 CELERY_TIMEZONE = "Asia/Tehran"
 CELERY_TASK_TRACK_STARTED = True
 CELERY_TASK_TIME_LIMIT = 30 * 60
-CELERY_BROKER_URL = "amqp://guest:guest@rabbitmq:5672//"
+CELERY_BROKER_URL = f"amqp://{os.getenv('RABBITMQ_USER')}:{os.getenv('RABBITMQ_PASS')}@{os.getenv('RABBITMQ_HOST')}:5672/{os.getenv('RABBITMQ_DEFAULT_VHOST')}"
 
 # REST_FRAMEWORK
 REST_FRAMEWORK = {

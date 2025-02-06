@@ -17,7 +17,7 @@ services:
       - blog_db
     command: sh -c "python manage.py makemigrations && \
                     python manage.py migrate && \
-                    python manage.py collectstatic --noinput && \      
+                    python manage.py collectstatic --noinput && \
                     gunicorn core.wsgi --bind 0.0.0.0:8000"
   celery_worker:
     build:
@@ -56,6 +56,8 @@ services:
     volumes:
       - ./rabbitmq/data/:/var/lib/rabbitmq/
       - ./rabbitmq/log/:/var/log/rabbitmq
+      - ./envs/prod/rabbitmq/rabbitmq-setup-prod.sh:/etc/rabbitmq/rabbitmq-setup.sh
+    command: sh -c "chmod +x /etc/rabbitmq/rabbitmq-setup.sh && /etc/rabbitmq/rabbitmq-setup.sh"
 
   nginx:
     image: nginx:latest
