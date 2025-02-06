@@ -173,6 +173,6 @@ cython_debug/
 pgdata
 core/media/
 *.env.prod
-*-prod.yml
+#*-prod.yml
 /smtp4dev-data/
 /rabbitmq/
