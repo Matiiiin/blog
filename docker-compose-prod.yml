@@ -70,6 +70,13 @@ services:
       - static_volume:/home/app/static
       - media_volume:/home/app/media
 
+  redis:
+    image: redis
+    restart: always
+    container_name: redis
+    ports:
+      - "6379:6379"
+    command: redis-server --save 60 1 --loglevel warnin
 volumes:
   static_volume:
   media_volume:
