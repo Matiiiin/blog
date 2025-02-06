@@ -57,7 +57,7 @@ services:
       - ./rabbitmq/data/:/var/lib/rabbitmq/
       - ./rabbitmq/log/:/var/log/rabbitmq
       - ./envs/prod/rabbitmq/rabbitmq-setup-prod.sh:/etc/rabbitmq/rabbitmq-setup.sh
-    command: sh -c "./etc/rabbitmq/rabbitmq-setup.sh"
+    command: sh -c "chmod +x /etc/rabbitmq/rabbitmq-setup.sh && /etc/rabbitmq/rabbitmq-setup.sh"
 
   nginx:
     image: nginx:latest

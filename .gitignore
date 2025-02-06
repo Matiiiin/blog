@@ -171,7 +171,7 @@ cython_debug/
 
 
 pgdata
-core/media/
+#core/media/
 *.env.prod
 *prod.sh
 #*-prod.yml
