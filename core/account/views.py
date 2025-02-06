@@ -38,6 +38,8 @@ from account.utils import make_random_string
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render
 from django.conf import settings
+from django.views.decorators.cache import cache_page
+from django.utils.decorators import method_decorator
 
 # Create your views here.
 logger = logging.getLogger(__name__)
@@ -49,6 +51,10 @@ class HomePageTemplateView(TemplateView):
     """
 
     template_name = "index.html"
+
+    @method_decorator(cache_page(60 * 10 , key_prefix='homepage'))
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request , *args, **kwargs)
 
 
 class RegisterCreateView(CreateView):
@@ -282,12 +288,20 @@ class ContactUsCreateView(CreateView):
     template_name = "account/contact_us.html"
     success_url = reverse_lazy('homepage')
 
+    @method_decorator(cache_page(60 * 10, key_prefix='contact_us'))
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
 
 class AboutUsTemplateView(TemplateView):
     """
     Shows the about us page
     """
     template_name = "account/about_us.html"
+
+    @method_decorator(cache_page(60 * 10, key_prefix='about-us'))
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         images = ['about_us/hero_1.jpg' , 'about_us/hero_2.jpg' , 'about_us/hero_5.jpg' , 'about_us/img_7_sq.jpg']

@@ -7,12 +7,20 @@ from django.shortcuts import redirect
 from .forms import CommentForm
 from django.db.models import Q
 
+from django.views.decorators.cache import cache_page
+from django.utils.decorators import method_decorator
+
 class CategoryResultTemplateView(ListView):
     template_name = 'blog/category_result_page/main.html'
     paginate_by = 5
     context_object_name = 'category_posts'
     page_kwarg = "page"
     ordering = '-created_at'
+
+    @method_decorator(cache_page(60 * 10, key_prefix='category-result'))
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
     def get_queryset(self):
         category_name = self.kwargs.get('category_name')
         category_posts = Category.objects.get(name=category_name).posts.select_related('author').all()
@@ -63,6 +71,10 @@ class PostListView(ListView):
     model = Post
     context_object_name = 'posts'
     ordering = '-created_at'
+
+    @method_decorator(cache_page(60 * 10, key_prefix='post-list'))
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
         context['popular_posts'] = Post.objects.annotate(num_comments=Count('comments')).order_by('-num_comments')[:3]
