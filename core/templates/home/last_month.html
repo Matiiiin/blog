@@ -1,0 +1,26 @@
+{% load last_month_4_posts %}
+{% last_month_4_posts as posts %}
+<section class="section posts-entry posts-entry-sm bg-light">
+		<div class="container">
+                <div class="row mb-4">
+            <div class="col-sm-6">
+                <h2 class="posts-entry-title">Last month posts</h2>
+            </div>
+        </div>
+			<div class="row">
+                {% for post in posts %}
+				<div class="col-md-6 col-lg-3">
+					<div class="blog-entry">
+						<a href="{% url 'blog:post-detail' slug=post.slug %}" class="img-link">
+							<img src="{{ post.hero_image.url }}" alt="Image" class="img-fluid">
+						</a>
+						<span class="date">{{ post.created_at | date }}</span>
+						<h2><a href="{% url 'blog:post-detail' slug=post.slug %}">{{ post.title | title }}</a></h2>
+						<p , class="last_month_4_posts">{{ post.short_content }}</p>
+						<p><a href="{% url 'blog:post-detail' slug=post.slug %}" class="read-more">Continue Reading</a></p>
+					</div>
+				</div>
+                {% endfor %}
+			</div>
+		</div>
+	</section>

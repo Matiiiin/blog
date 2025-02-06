@@ -168,5 +168,11 @@ cython_debug/
 
 # PyPI configuration file
 .pypirc
-pgdata
 
+
+pgdata
+core/media/
+*.env.prod
+#*-prod.yml
+/smtp4dev-data/
+/rabbitmq/

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Your Site</title>
+  <style>
+    /* Style the search input with a lighter gray color */
+    .header-search-form input {
+      color: #adb5bd !important;              /* Lighter gray text */
+      background-color: transparent;          /* Transparent background */
+      border: 1px solid #adb5bd !important;     /* Lighter gray border */
+      padding: 0.375rem 0.75rem;                /* Adjust padding as desired */
+      border-radius: 0.25rem;                   /* Rounded corners */
+      transition: border-color 0.3s, box-shadow 0.3s;
+    }
+
+    /* Style the placeholder text with the same lighter gray */
+    .header-search-form input::placeholder {
+      color: #adb5bd !important;
+      opacity: 1; /* Ensure full opacity */
+    }
+    .header-search-form input::-webkit-input-placeholder {
+      color: #adb5bd !important;
+    }
+    .header-search-form input::-moz-placeholder {
+      color: #adb5bd !important;
+    }
+    .header-search-form input:-ms-input-placeholder {
+      color: #adb5bd !important;
+    }
+    .header-search-form input:-moz-placeholder {
+      color: #adb5bd !important;
+    }
+
+    /* Maintain the same lighter gray border on focus */
+    .header-search-form input:focus {
+      outline: none;
+      border: 1px solid #adb5bd !important;
+      box-shadow: none;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="site-mobile-menu site-navbar-target">
+    <div class="site-mobile-menu-header">
+      <div class="site-mobile-menu-close">
+        <span class="icofont-close js-menu-toggle"></span>
+      </div>
+    </div>
+    <div class="site-mobile-menu-body"></div>
+  </div>
+
+  <header class="site-nav">
+    <div class="container">
+      <div class="menu-bg-wrap">
+        <div class="site-navigation">
+          <!-- Use a Bootstrap row with align-items-center to vertically center content -->
+          <div class="row g-0 align-items-center">
+            <!-- Logo -->
+            <div class="col-2">
+              <a href="{% url 'homepage' %}" class="logo m-0 float-start">
+                Blogy<span class="text-primary">.</span>
+              </a>
+            </div>
+
+            <!-- Navigation Menu -->
+            <div class="col-6 text-center">
+              <ul class="js-clone-nav d-none d-lg-inline-block text-start site-menu mx-auto">
+                <li class="active"><a href="{% url 'homepage' %}">Home</a></li>
+                <li><a href="{% url 'blog:post-list' %}">Blog</a></li>
+                <li><a href="{% url 'account:contact-us' %}">Contact us</a></li>
+                <li><a href="{% url 'account:about-us' %}">About us</a></li>
+              </ul>
+            </div>
+
+            <!-- Search Form (Vertically Centered) -->
+            <div class="col-2" style="display: flex; align-items: center; justify-content: center;">
+              <form class="header-search-form" action="{% url 'blog:post-search' %}" method="get">
+                <input type="text" name="search" class="form-control text-center" placeholder="Search and hit enter...">
+              </form>
+            </div>
+
+            <!-- User Account / Login/Register -->
+            <div class="col-2 text-end">
+              {% if user.is_authenticated %}
+                <div class="dropdown">
+                  <a href="#" class="dropdown-toggle text-white" id="dropdownMenuButton"
+                     data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="bi bi-person-circle"></i> {{ user.username }}
+                  </a>
+                  <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
+                    <li><a class="dropdown-item" href="{% url 'account:user-logout' %}">Logout</a></li>
+                    <li><a class="dropdown-item" href="{% url 'account:user-dashboard' %}">Dashboard</a></li>
+                  </ul>
+                </div>
+              {% else %}
+                <ul class="js-clone-nav d-none d-lg-inline-block text-start site-menu mx-auto">
+                  <li><a href="{% url 'account:user-login' %}">Login</a></li>
+                  <li><a href="{% url 'account:user-register' %}">Register</a></li>
+                </ul>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+</body>
+</html>

@@ -1,0 +1,23 @@
+{% extends 'main_master.html' %}
+{% load static %}
+{% block content %}
+<section class="section">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card p-4">
+                    <h2 class="text-center mb-4">Register</h2>
+                    <form method="post">
+                        {% csrf_token %}
+                        {{ form.as_div }}
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary">Register</button>
+                        </div>
+                        <p class="text-center mt-3">Already have an account? <a href="{% url 'account:user-login' %}">Login here</a></p>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,29 @@
+{% extends "main_master.html" %}
+{% load static %}
+{% block content %}
+
+{#	Start retroy layout blog posts#}
+    {% include 'home/retroy_layout.html' %}
+{#	End retroy layout blog posts#}
+
+{#    start technology category#}
+    {% include 'home/technology_category.html' %}
+{#    end technology category#}
+
+{#    start last month#}
+    {% include 'home/last_month.html' %}
+{#    end last month#}
+
+{#    start culture category#}
+    {% include 'home/culture_category.html' %}
+{#    end culture category#}
+
+{#    start fashion category#}
+    {% include 'home/fashion_category.html' %}
+{#    end fashion category#}
+
+{#    start travel category#}
+    {% include 'home/travel_category.html' %}
+{#    end travel category#}
+
+{% endblock %}

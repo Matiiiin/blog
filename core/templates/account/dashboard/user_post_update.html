@@ -1,0 +1,80 @@
+{% extends 'dashboard_main_master.html' %}
+{% block content %}
+
+    <!-- Edit Post Page -->
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            {% include './sidebar.html' %}
+
+            <!-- Main Content -->
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 mt-4">
+                <h1 class="h2">Edit Post</h1>
+                <form method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+
+                    <div class="mb-3">
+                        <label for="title" class="form-label">Title</label>
+                        {{ form.title.errors }}
+                        {{ form.title }}
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="category" class="form-label">Category</label>
+                        {{ form.category.errors }}
+                        {{ form.category }}
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="hero_image" class="form-label">Hero Image</label>
+                        {{ form.hero_image.errors }}
+                        {{ form.hero_image }}
+                        <small class="text-muted">Current Hero Image:</small><br>
+                        {% if post.hero_image %}
+                            <img src="{{ post.hero_image.url }}" alt="Hero Image" class="img-thumbnail"
+                                 style="max-width: 200px;">
+                        {% else %}
+                            <p class="text-muted">No hero image available.</p>
+                        {% endif %}
+
+
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="images" class="form-label">Additional Images</label>
+                        {{ form.images.errors }}
+                        <input type="file" class="form-control" id="images" name="images" accept="image/*" multiple>
+                        <small class="text-muted">Current Additional Images:</small><br>
+                        <div class="d-flex flex-wrap">
+                            {% for image in post.images.all %}
+                                <div class="me-2">
+                                    <img src="{{ image.image.url }}" alt="Additional Image" class="img-thumbnail"
+                                         style="max-width: 100px; height: auto;">
+                                </div>
+                            {% empty %}
+                                <p class="text-muted">No additional images available.</p>
+                            {% endfor %}
+                        </div>
+
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="short_content" class="form-label">Short Content</label>
+                        {{ form.short_content.errors }}
+                        {{ form.short_content }}
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="main_content" class="form-label">Main Content</label>
+                        {{ form.main_content.errors }}
+                        {{ form.main_content }}
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Update Post</button>
+                </form>
+            </main>
+        </div>
+    </div>
+
+{% endblock %}
+
